@@ -1,0 +1,525 @@
+/* === STYLE_STAMPA.CSS === */
+/* Stile universale per tutte le stampe Sinx (schede, fatture, report) */
+
+/* Impostazioni generali per A4 verticale */
+@page {
+  size: A4 portrait;
+  margin: 20mm;
+}
+
+body {
+  font-family: "Times New Roman", Georgia, serif;
+  color: #000;
+  background: #fff;
+  font-size: 12pt;
+  line-height: 1.4;
+}
+
+/* Titoli e intestazioni */
+h1, h2, h3 {
+  text-align: center;
+  color: #000;
+  margin: 6px 0;
+}
+
+h2 {
+  font-size: 18pt;
+  text-transform: uppercase;
+}
+
+h3 {
+  font-size: 14pt;
+  margin-top: 20px;
+  margin-bottom: 8px;
+}
+
+/* Linea di separazione */
+hr {
+  border: 0;
+  border-top: 1px solid #444;
+  margin: 15px auto;
+  width: 90%;
+}
+
+/* Pulsante stampa (solo a schermo) */
+.print-btn {
+  display: inline-block;
+  margin: 15px auto;
+  padding: 10px 18px;
+  background: #233592;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: center;
+  font-size: 12pt;
+}
+
+.print-btn:hover {
+  background: #4c5cff;
+}
+
+/* Nasconde gli elementi non di stampa */
+@media print {
+  .print-btn,
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* === BOX DATI CLIENTE / ASSOCIATO === */
+.cliente-box {
+  width: 90%;
+  margin: 0 auto 20px;
+  border: 1px solid #555;
+  border-radius: 8px;
+  padding: 12px 20px;
+  background: #f9f9f9;
+}
+
+.cliente-box h3 {
+  margin-bottom: 8px;
+  border-bottom: 1px solid #aaa;
+  padding-bottom: 4px;
+  font-size: 14pt;
+}
+
+.cliente-box p {
+  margin: 3px 0;
+  font-size: 11pt;
+}
+
+/* === FOTO PROFILO (per schede) === */
+.photo {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.photo img {
+  width: 120px;
+  height: auto;
+  border-radius: 6px;
+  border: 1px solid #333;
+}
+
+/* === TABELLA GENERICA === */
+.info-table, 
+.receipts-table, 
+.dettagli-fattura {
+  width: 90%;
+  border-collapse: collapse;
+  margin: 0 auto 20px;
+  border: 1px solid #444;
+}
+
+.info-table td {
+  padding: 6px 10px;
+  vertical-align: top;
+}
+
+.info-table td:first-child {
+  font-weight: bold;
+  width: 35%;
+}
+
+/* === FATTURA - Dettagli articoli === */
+.dettagli-fattura th {
+  background: #e8e8e8;
+  border: 1px solid #444;
+  padding: 8px;
+  font-size: 11pt;
+  text-align: center;
+}
+
+.dettagli-fattura td {
+  border: 1px solid #444;
+  padding: 6px 8px;
+  font-size: 10.5pt;
+  vertical-align: top;
+}
+
+.dettagli-fattura tr:nth-child(even) td {
+  background: #f9f9f9;
+}
+
+/* === RIEPILOGO TOTALI === */
+.totali {
+  width: 50%;
+  margin: 10px auto 25px;
+  border-collapse: collapse;
+}
+
+.totali td {
+  padding: 6px 8px;
+  font-size: 11pt;
+}
+
+.totali td:first-child {
+  text-align: left;
+}
+
+.totali td:last-child {
+  text-align: right;
+  font-weight: bold;
+}
+
+/* === SEZIONE PAGAMENTO === */
+.modalita {
+  text-align: center;
+  border-top: 1px solid #444;
+  margin-top: 20px;
+  padding-top: 10px;
+  font-size: 11pt;
+}
+
+/* === PIE' DI PAGINA STAMPA === */
+.footer {
+  margin-top: 30px;
+  text-align: center;
+  font-size: 10pt;
+  color: #333;
+}
+
+/* === CONTABILITÀ / CONTO ECONOMICO === */
+.ce-table {
+  width: 95%;
+  margin: 0 auto 20px;
+  border-collapse: collapse;
+  font-size: 11pt;
+}
+
+.ce-table th, .ce-table td {
+  border: 1px solid #555;
+  padding: 6px 10px;
+}
+
+.ce-table th {
+  background: #f2f2f2;
+  text-align: center;
+}
+
+.ce-table td {
+  vertical-align: top;
+}
+
+.ce-table .val {
+  text-align: right;
+}
+
+.totals-table {
+  width: 70%;
+  margin: 0 auto;
+  border-collapse: collapse;
+  font-size: 12pt;
+}
+
+.totals-table td {
+  padding: 6px;
+  border: none;
+}
+
+.totals-table .val {
+  text-align: right;
+}
+
+/* === OTTIMIZZAZIONE STAMPA === */
+@media print {
+  body { margin: 10mm; }
+  .cliente-box, .dettagli-fattura, .totali, .info-table {
+    page-break-inside: avoid;
+  }
+}
+
+/* === PRIMA NOTA (stampa) === */
+
+.pn-table {
+  width: 95%;
+  margin: 10px auto 25px;
+  border-collapse: collapse;
+  font-size: 12pt;
+}
+
+.pn-table th, .pn-table td {
+  border: 1px solid #555;
+  padding: 6px 8px;
+}
+
+.pn-table th {
+  background: #eaeaea;
+  font-weight: bold;
+  text-align: center;
+}
+
+.pn-table .subheader th {
+  background: #f4f4f4;
+  font-size: 11pt;
+  font-style: italic;
+}
+
+.pn-table td.val {
+  text-align: right;
+}
+
+.totals-table {
+  width: 70%;
+  margin: 20px auto;
+  font-size: 13pt;
+  border-collapse: collapse;
+}
+
+.totals-table td {
+  padding: 6px 10px;
+}
+
+.totals-table .val {
+  text-align: right;
+}
+
+.totals-table .highlight td {
+  background: #f0f0f0;
+  font-weight: bold;
+  border-top: 2px solid #555;
+}
+
+@media print {
+  .pn-table, .totals-table {
+    page-break-inside: avoid;
+  }
+}
+
+/* === RICEVUTA FISCALE === */
+.ricevuta-table {
+  width: 70%;
+  margin: 20px auto;
+  border-collapse: collapse;
+  border: 1px solid #444;
+  font-size: 11pt;
+}
+
+.ricevuta-table th, .ricevuta-table td {
+  border: 1px solid #444;
+  padding: 8px 10px;
+  text-align: left;
+}
+
+.ricevuta-table th {
+  background: #eaeaea;
+  width: 35%;
+  font-weight: bold;
+}
+
+.ricevuta-table tr:nth-child(even) td {
+  background: #f9f9f9;
+}
+
+.firma-box {
+  text-align: right;
+  width: 70%;
+  margin: 40px auto 0;
+  font-size: 11pt;
+}
+
+/* === STATO PATRIMONIALE === */
+.ce-table thead th[colspan="3"] {
+  background: #ddd;
+  font-size: 12pt;
+  text-transform: uppercase;
+}
+
+.ce-table tr:nth-child(even) td {
+  background: #f9f9f9;
+}
+
+.totals-table .highlight td {
+  background: #efefef;
+  border-top: 2px solid #555;
+}
+
+/* === BILANCIO ECONOMICO === */
+.ce-table {
+  width: 95%;
+  margin: 10px auto 20px;
+  border-collapse: collapse;
+  font-size: 11pt;
+  border: 1px solid #444;
+}
+
+.ce-table th, .ce-table td {
+  border: 1px solid #444;
+  padding: 6px 10px;
+}
+
+.ce-table th {
+  background: #e8e8e8;
+  text-align: center;
+  font-weight: bold;
+}
+
+.ce-table tr:nth-child(even) td {
+  background: #f9f9f9;
+}
+
+.ce-table .highlight td {
+  background: #f0f0f0;
+  font-weight: bold;
+  border-top: 2px solid #444;
+}
+
+.totals-table {
+  width: 70%;
+  margin: 20px auto;
+  border-collapse: collapse;
+  font-size: 12pt;
+}
+
+.totals-table td {
+  padding: 6px 10px;
+}
+
+.totals-table .val {
+  text-align: right;
+}
+
+.firma-box {
+  width: 80%;
+  margin: 30px auto;
+  text-align: right;
+  font-size: 11pt;
+}
+
+/* === SEZIONI DOPPIA COLONNA (RICAVI / ONERI, ATTIVITA / PASSIVITA) === */
+.dual-table {
+  width: 95%;
+  margin: 15px auto 25px;
+  border-collapse: collapse;
+  font-size: 11pt;
+  border: 1px solid #444;
+}
+
+.dual-table th, .dual-table td {
+  border: 1px solid #444;
+  padding: 6px 10px;
+  vertical-align: top;
+}
+
+.dual-table th {
+  background: #e8e8e8;
+  font-weight: bold;
+  text-align: center;
+}
+
+.dual-table td div {
+  margin: 2px 0;
+  padding: 2px 0;
+  border-bottom: 1px dotted #ccc;
+}
+
+.dual-table td div:last-child {
+  border-bottom: none;
+}
+
+.dual-table tr:nth-child(even) td {
+  background: #f9f9f9;
+}
+
+/* Migliora la leggibilità in bianco/nero */
+@media print {
+  .dual-table th {
+    background: #ddd !important;
+  }
+  .dual-table td {
+    background: white !important;
+  }
+}
+
+/* === MODULI ASSOCIATIVI === */
+.contenuto-modulo {
+  width: 90%;
+  margin: 20px auto;
+  text-align: justify;
+  font-size: 12pt;
+  line-height: 1.6;
+}
+
+.contenuto-modulo h2 {
+  text-align: center;
+  font-size: 16pt;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #333;
+  padding-bottom: 5px;
+}
+
+.contenuto-modulo p {
+  margin: 8px 0;
+}
+
+.contenuto-modulo b {
+  color: #000;
+}
+
+blockquote {
+  border-left: 3px solid #999;
+  padding-left: 12px;
+  color: #333;
+  font-style: italic;
+  margin: 12px 0;
+}
+
+/* Sezione firma */
+.firma-box {
+  width: 80%;
+  margin: 40px auto 20px;
+  text-align: right;
+  font-size: 12pt;
+  line-height: 1.4;
+}
+
+.firma-box p {
+  margin: 4px 0;
+}
+
+/* Ottimizzazione per stampa */
+@media print {
+  .contenuto-modulo,
+  .firma-box {
+    page-break-inside: avoid;
+  }
+}
+
+/* === STAMPA SOCI === */
+.soci-table {
+  width: 95%;
+  margin: 20px auto 30px;
+  border-collapse: collapse;
+  font-size: 11pt;
+  border: 1px solid #444;
+}
+
+.soci-table th,
+.soci-table td {
+  border: 1px solid #444;
+  padding: 6px 8px;
+  text-align: left;
+}
+
+.soci-table th {
+  background: #e8e8e8;
+  font-weight: bold;
+  text-align: center;
+}
+
+.soci-table tr:nth-child(even) td {
+  background: #f9f9f9;
+}
+
+.soci-table td:first-child {
+  text-align: center;
+}
+
+@media print {
+  .soci-table {
+    page-break-inside: avoid;
+  }
+}
