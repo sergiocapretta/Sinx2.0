@@ -45,7 +45,7 @@ include($linguaindex2);
 
 if ($user) {
 include('./top.inc');
-include('./menu.inc');
+
 
 	include ('./dati_db.inc');
 	$link=mysqli_connect("$host", "$username", "$password","$db_name")or die(mysqli_connect_error("Non posso connettermi al database"));
@@ -85,7 +85,6 @@ echo <<<HTML
   <div class="card">
     <h3 class="card-title">$Lptitolonote</h3>
     <p class="card-subtitle">$LlinkDaHome <a href="./InsNotepad.php" class="link-btn">Blocco Note</a></p>
-    <p><b>$Lcompnote</b></p>
 
     <form action="./conf_note.php" method="POST" enctype="multipart/form-data">
       <textarea name="formcontent" rows="12" readonly class="note-area">{$row['testo']}</textarea>
@@ -129,6 +128,31 @@ echo <<<HTML
 </section>
 
 <hr class="divider">
+
+<section class="content-section"><div class="card">
+  <h3 class="card-title">Assistente AI</h3>
+  <p class="card-subtitle">Fai una domanda sui dati autorizzati dall’amministratore.</p>
+  <form id="sinx-ai-form">
+    <label for="sinx-ai-question">La tua domanda</label>
+    <input id="sinx-ai-question" name="question" maxlength="1000" required>
+    <button class="btn-edit" type="submit">Chiedi</button>
+  </form>
+  <div id="sinx-ai-answer" aria-live="polite"></div>
+</div></section>
+<script>
+document.getElementById('sinx-ai-form').addEventListener('submit', function (event) {
+  event.preventDefault();
+  var output = document.getElementById('sinx-ai-answer');
+  output.textContent = 'Sto cercando una risposta…';
+  var body = new URLSearchParams();
+  body.set('question', document.getElementById('sinx-ai-question').value);
+    fetch('./ai_chat.php', {method: 'POST', credentials: 'same-origin', body: body})
+    .then(function (response) { return response.json(); })
+    .then(function (data) { output.textContent = data.answer || data.error || 'Risposta non disponibile.'; })
+    .catch(function () { output.textContent = 'Servizio temporaneamente non disponibile.'; });
+});
+</script>
+
 <!-- SCRIPT SOSTEGNO -->
   <div><small><center> $Ldonazione </center></small></br></div>
       <center><script async

@@ -242,6 +242,9 @@ if (!empty($weather["current"])) {
           <li><a href='./Log.php'><i class="material-icons">assignment</i><span><?php echo $Llog; ?></span></a></li>
           <li><a href='./Backup_database.php'><i class="material-icons">open_in_browser</i><span>Backup</span></a></li>
           <li><a href='./diagnostica.php'><i class="material-icons">assignment</i><span>Diagnostica di sistema</span></a></li>
+          <?php if ($user === 'admin') { ?>
+  <li><a href='./ai_config.php'><i class="material-icons">smart_toy</i><span>Configurazione AI</span></a></li>
+<?php } ?>
         </ul>
       </li>
 
