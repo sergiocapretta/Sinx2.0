@@ -44,14 +44,25 @@ function sinx_ai_call($settings, $messages) {
         }
         $body = array('model' => $model, 'max_tokens' => 900, 'system' => $system, 'messages' => $contents);
     } elseif ($provider === 'gemini') {
-        $url = 'https://generativelanguage.googleapis.com/v1beta/models/' . rawurlencode($model) . ':generateContent?key=' . rawurlencode($key);
-        $headers = array();
+        // Accept either a bare model ID or the API's "models/{id}" form.
+        $modelId = preg_replace('/^models\//', '', $model);
+        $url = 'https://generativelanguage.googleapis.com/v1beta/models/' . rawurlencode($modelId) . ':generateContent';
+        // Send the key in the documented header instead of the URL.
+        $headers = array('x-goog-api-key: ' . $key);
         $contents = array();
+        $systemInstruction = '';
         foreach ($messages as $message) {
+            if ($message['role'] === 'system') {
+                $systemInstruction .= ($systemInstruction === '' ? '' : "\n") . $message['content'];
+                continue;
+            }
             $role = $message['role'] === 'assistant' ? 'model' : 'user';
             $contents[] = array('role' => $role, 'parts' => array(array('text' => $message['content'])));
         }
         $body = array('contents' => $contents, 'generationConfig' => array('temperature' => 0, 'maxOutputTokens' => 900));
+        if ($systemInstruction !== '') {
+            $body['systemInstruction'] = array('parts' => array(array('text' => $systemInstruction)));
+        }
     } else {
         throw new Exception('Fornitore AI non supportato.');
     }
@@ -66,6 +77,17 @@ function sinx_ai_call($settings, $messages) {
     if ($response === false) throw new Exception('Connessione al fornitore AI non riuscita.');
     $data = json_decode($response, true);
     if (!is_array($data)) throw new Exception('Risposta non valida dal fornitore AI.');
+
+    // Preserve the provider's useful error in the server log; the UI still
+    // shows a generic message and never exposes the API key.
+    $httpStatus = 0;
+    if (isset($http_response_header[0]) && preg_match('/\s([0-9]{3})\s/', $http_response_header[0], $statusMatch)) {
+        $httpStatus = (int)$statusMatch[1];
+    }
+    if ($httpStatus >= 400) {
+        $providerError = isset($data['error']['message']) ? $data['error']['message'] : 'Risposta di errore senza dettagli.';
+        throw new Exception($provider . ' API HTTP ' . $httpStatus . ': ' . $providerError);
+    }
 
     if ($provider === 'openai' || $provider === 'qwen') $answer = isset($data['choices'][0]['message']['content']) ? $data['choices'][0]['message']['content'] : '';
     elseif ($provider === 'anthropic') $answer = isset($data['content'][0]['text']) ? $data['content'][0]['text'] : '';
