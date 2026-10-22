@@ -84,7 +84,10 @@ try {
     ));
     echo json_encode(array('answer' => $answer));
 } catch (Exception $e) {
-    sinx_ai_json_error(502, 'Il fornitore AI non è al momento raggiungibile. Verifica la configurazione.');
+    // Keep provider diagnostics on the server for troubleshooting. Do not
+    // return provider details or credentials to the browser.
+    error_log('[Sinx AI] ' . $e->getMessage());
+    sinx_ai_json_error(502, 'Il fornitore AI non è al momento raggiungibile. Verifica i log del server per i dettagli.');
 }
 mysqli_close($db);
 ?>
