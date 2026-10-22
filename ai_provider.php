@@ -73,20 +73,38 @@ function sinx_ai_call($settings, $messages) {
         'content' => json_encode($body), 'timeout' => 35, 'ignore_errors' => true,
         'follow_location' => 0
     ), 'ssl' => array('verify_peer' => true, 'verify_peer_name' => true)));
-    $response = @file_get_contents($url, false, $context);
-    if ($response === false) throw new Exception('Connessione al fornitore AI non riuscita.');
-    $data = json_decode($response, true);
-    if (!is_array($data)) throw new Exception('Risposta non valida dal fornitore AI.');
-
-    // Preserve the provider's useful error in the server log; the UI still
-    // shows a generic message and never exposes the API key.
+    // Retry transient network and service errors with exponential backoff.
+    $maxAttempts = 3;
+    $data = null;
     $httpStatus = 0;
-    if (isset($http_response_header[0]) && preg_match('/\s([0-9]{3})\s/', $http_response_header[0], $statusMatch)) {
-        $httpStatus = (int)$statusMatch[1];
+    for ($attempt = 1; $attempt <= $maxAttempts; $attempt++) {
+        $response = @file_get_contents($url, false, $context);
+        if ($response === false) {
+            if ($attempt < $maxAttempts) {
+                usleep((int)(pow(2, $attempt - 1) * 1000000) + mt_rand(0, 250000));
+                continue;
+            }
+            throw new Exception('Connessione al fornitore AI non riuscita.');
+        }
+
+        $data = json_decode($response, true);
+        if (!is_array($data)) throw new Exception('Risposta non valida dal fornitore AI.');
+        $httpStatus = 0;
+        if (isset($http_response_header[0]) && preg_match('/\s([0-9]{3})\s/', $http_response_header[0], $statusMatch)) {
+            $httpStatus = (int)$statusMatch[1];
+        }
+
+        $isTransient = $httpStatus === 408 || $httpStatus === 429 || ($httpStatus >= 500 && $httpStatus <= 599);
+        if ($isTransient && $attempt < $maxAttempts) {
+            usleep((int)(pow(2, $attempt - 1) * 1000000) + mt_rand(0, 250000));
+            continue;
+        }
+        break;
     }
+
     if ($httpStatus >= 400) {
         $providerError = isset($data['error']['message']) ? $data['error']['message'] : 'Risposta di errore senza dettagli.';
-        throw new Exception($provider . ' API HTTP ' . $httpStatus . ': ' . $providerError);
+        throw new Exception($provider . ' API HTTP ' . $httpStatus . ': ' . $providerError, $httpStatus);
     }
 
     if ($provider === 'openai' || $provider === 'qwen') $answer = isset($data['choices'][0]['message']['content']) ? $data['choices'][0]['message']['content'] : '';
