@@ -84,10 +84,16 @@ try {
     ));
     echo json_encode(array('answer' => $answer));
 } catch (Exception $e) {
-    // Keep provider diagnostics on the server for troubleshooting. Do not
-    // return provider details or credentials to the browser.
+    // Keep provider diagnostics on the server, without exposing credentials.
     error_log('[Sinx AI] ' . $e->getMessage());
-    sinx_ai_json_error(502, 'Il fornitore AI non è al momento raggiungibile. Verifica i log del server per i dettagli.');
+    $providerStatus = (int)$e->getCode();
+    if ($providerStatus === 503 || ($providerStatus >= 500 && $providerStatus <= 599)) {
+        sinx_ai_json_error(502, 'Il servizio AI è temporaneamente sovraccarico o non disponibile. Riprova tra qualche minuto.');
+    }
+    if ($providerStatus === 429) {
+        sinx_ai_json_error(502, 'Il fornitore AI ha temporaneamente limitato le richieste. Attendi qualche minuto e riprova.');
+    }
+    sinx_ai_json_error(502, 'Il fornitore AI non è al momento raggiungibile. Verifica la configurazione e riprova.');
 }
 mysqli_close($db);
 ?>
