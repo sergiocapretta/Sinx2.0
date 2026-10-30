@@ -235,9 +235,11 @@ $nome_completo_db = mysqli_real_escape_string($connect, $nome_completo);
     }
     ?>
 
-    <div class="text-center" style="margin-top:30px;">
-      <a href="./ricerca.php" class="btn-add">← Vai alla ricerca</a>
-    </div>
+    <center>
+      <div class="text-center" style="margin-top:30px;">
+        <a href="./ricerca.php" class="btn-add">← Vai alla ricerca</a>
+      </div>
+    </center>
 
   </div>
 </div>
