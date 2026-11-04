@@ -41,8 +41,12 @@ try {
     throw new RuntimeException('Preparazione della cancellazione non riuscita.');
   }
 
-  mysqli_stmt_bind_param($stmt, 'i', $id);
-  mysqli_stmt_execute($stmt);
+  if (!mysqli_stmt_bind_param($stmt, 'i', $id)) {
+    throw new RuntimeException('Associazione del record non riuscita.');
+  }
+  if (!mysqli_stmt_execute($stmt)) {
+    throw new RuntimeException('Esecuzione della cancellazione non riuscita: ' . mysqli_stmt_error($stmt));
+  }
   $deleted = mysqli_stmt_affected_rows($stmt);
   mysqli_stmt_close($stmt);
   mysqli_close($connect);
