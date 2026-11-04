@@ -67,14 +67,14 @@ if ($user == 'admin') {
 
         <form action="./conf_dati_stud.php" method="POST" enctype="multipart/form-data" class="sinx-form">
           <label for="ntessera"><span style="color:red;"><?php echo $Lntessera; ?></span></label>
-          <input name="ntessera" id="ntessera" type="text" required>
+          <input name="ntessera" id="ntessera" type="text" maxlength="60" data-maxlength="60" required>
           <small><i><?php echo $Listntessera; ?></i></small>
 
           <!-- Inclusione dati comuni -->
           <?php include('./DatiComuni.inc'); ?>
 
           <label for="classe"><span style="color:red;"><?php echo $Lfunzione; ?>*</span></label>
-          <select name="classe" id="classe" required>
+          <select name="classe" id="classe" data-maxlength="50" required>
             <option value="" selected><?php echo $Lfunzione; ?></option>
             <?php
             $query = "SELECT classe FROM tb_classe";
