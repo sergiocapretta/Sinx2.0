@@ -73,13 +73,13 @@ if ($user == 'admin') {
       <form action="./conf_dati_ins.php" method="POST" enctype="multipart/form-data" class="sinx-form">
 
         <label for="ntessera" style="color:red;"><?php echo $Lntessera; ?> *</label>
-        <input name="ntessera" id="ntessera" type="text" required>
+        <input name="ntessera" id="ntessera" type="text" maxlength="60" data-maxlength="60" required>
         <small><i><?php echo $Listntessera; ?></i></small>
 
         <?php include('./DatiComuni.inc'); ?>
 
         <label for="materia" style="color:red;"><?php echo $Ltipoassociato; ?> *</label>
-        <select name="materia" id="materia" required>
+        <select name="materia" id="materia" data-maxlength="150" required>
           <option value="" selected><?php echo $Ltipoassociato; ?></option>
           <?php
           $query = "SELECT materia FROM tb_materia";
