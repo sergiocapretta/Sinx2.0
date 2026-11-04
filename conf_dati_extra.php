@@ -34,44 +34,8 @@ Sinx for Association - Gestionale per Associazioni no-profit
 
   session_start();
 
-// === INIZIO DIAGNOSTICA INSERIMENTO EXTRA ===
-$diagStage = 'Avvio script';
-
-ini_set('log_errors', '1');
-ini_set('display_errors', '0');
-error_reporting(E_ALL);
-
-// Registra gli errori PHP fatali
-register_shutdown_function(function() use (&$diagStage) {
-    $errore = error_get_last();
-
-    if ($errore && in_array($errore['type'], array(
-        E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR
-    ))) {
-        error_log(
-            '[InsAnagrExtra] ERRORE FATALE - Fase: ' .
-            $diagStage . ' - ' .
-            $errore['message'] . ' - Riga: ' .
-            $errore['line']
-        );
-    }
-});
-
-// Registra avvisi ed errori PHP
-set_error_handler(function($numero, $messaggio, $file, $riga) use (&$diagStage) {
-    error_log(
-        '[InsAnagrExtra] PHP - Fase: ' .
-        $diagStage . ' - ' .
-        $messaggio . ' - Riga: ' . $riga
-    );
-
-    return false;
-});
-// === FINE DIAGNOSTICA ===
-
 $user = $_SESSION['utente'];
 if ($user) {
-	$diagStage = 'Lettura dati del modulo';
 	//$nnome = $_POST['nome'];
 	$ncodice = $_POST['ntessera'];
 	$nnome = $_POST['nome'];
@@ -121,8 +85,6 @@ function redirect($url,$tempo = FALSE ){
   }
 } 
 
-	$diagStage = 'Gestione immagine';
-
 // *** GESTIONE DELL'IMMAGINE ***
 $upload_dir = "./Immagini/Utenti";
 if(@is_uploaded_file($_FILES["immagine"]["tmp_name"])) {
@@ -138,38 +100,18 @@ $file_name = "personal.gif";
 }
 
 // *** FINE MODULO GESTIONE IMMAGINE ***
-$diagStage = 'Connessione database';
+
 
 	include ('./dati_db.inc');
 	$connect = mysqli_connect("$host", "$username", "$password", "$db_name", $port ) or die("Connessione fallita: " . mysqli_connect_error());
-
-	$diagStage = 'Inserimento record in tb_anagrafe';
 
 $tb_anagrafe = ("tb_anagrafe(ntessera,nome,cognome,indirizzo,cap,citta,provincia,tel,tel2,mansione,email,nomerif,datan,tipologia,note,immagine)");
 
 	if ($nome){ 
 $sql="insert into $tb_anagrafe values ('$codice', '$nome', '$cognome', '$indirizzo', '$cap', '$citta', '$provincia', '$tel', '$tel2', '$mansione', '$email', '$nomerif', '$datan', 'Extra', '$note', '$file_name')"; //inserisco i valori nel database
-		$result = mysqli_query($connect, $sql);
+		$result=mysqli_query($connect, $sql);
 
-if (!$result) {
-    error_log(
-        '[InsAnagrExtra] ERRORE MYSQL: ' .
-        mysqli_error($connect)
-    );
-
-    error_log(
-        '[InsAnagrExtra] Numero errore MYSQL: ' .
-        mysqli_errno($connect)
-    );
-
-    mysqli_close($connect);
-
-    die("Errore durante l'inserimento dei dati. Contattare l'amministratore.");
-}
-
-$diagStage = 'Inserimento riuscito - Redirect';
-
-header('location: ./conferma.php?rif=InsAnagrExtra'); //Vado alla pagina di conferma
+		header('location: ./conferma.php?rif=InsAnagrExtra'); //Vado alla pagina di conferma
 	}else{ 
 		header('location: ./errore.php?rif=InsAnagrExtra'); //Vado alla pagina di errore
 		}
