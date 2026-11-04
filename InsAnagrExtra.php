@@ -72,13 +72,13 @@ if ($user == 'admin') {
     <form action="./conf_dati_extra.php" method="POST" enctype="multipart/form-data" class="sinx-form">
 
       <label for="ntessera"><b><?php echo $Lntessera; ?></b></label>
-      <input type="text" name="ntessera" id="ntessera" required <?php echo $limit; ?> placeholder="Numero tessera">
+      <input type="text" name="ntessera" id="ntessera" maxlength="60" data-maxlength="60" required <?php echo $limit; ?> placeholder="Numero tessera">
       <small><i><?php echo $Listntessera; ?></i></small>
 
       <?php include('./DatiComuni.inc'); ?>
 
       <label for="mansione"><?php echo $Lmansione; ?></label>
-      <input type="text" name="mansione" id="mansione" required placeholder="Inserisci la mansione">
+      <input type="text" name="mansione" id="mansione" maxlength="150" data-maxlength="150" required placeholder="Inserisci la mansione">
 
       <div class="form-buttons" style="justify-content:center;">
         <button type="submit" class="btn-add" <?php echo $limit; ?>><?php echo $Linvia; ?></button>
