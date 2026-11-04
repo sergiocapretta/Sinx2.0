@@ -187,8 +187,13 @@ $nome_completo_db = mysqli_real_escape_string($connect, $nome_completo);
             </div>";
 
       while ($fatt = mysqli_fetch_assoc($rf)) {
+        $id_fattura = (int)$fatt['id_tot_fatture'];
         echo "<div class='appointment-item'>
-                <span>" . htmlspecialchars($fatt['id_tot_fatture'], ENT_QUOTES, 'UTF-8') . "</span>
+                <span>
+                  <form action='./stampa_fattura.php' method='POST' target='_blank' style='display:inline; margin:0;'>
+                    <button type='submit' name='id' value='" . $id_fattura . "' class='btn-mini' aria-label='Apri fattura numero " . $id_fattura . "'>" . $id_fattura . "</button>
+                  </form>
+                </span>
                 <span>" . htmlspecialchars($fatt['data'], ENT_QUOTES, 'UTF-8') . "</span>
                 <span>" . htmlspecialchars($fatt['tot_fattura'], ENT_QUOTES, 'UTF-8') . " €</span>
                 <span></span>
