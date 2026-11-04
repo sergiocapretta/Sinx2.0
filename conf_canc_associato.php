@@ -29,7 +29,9 @@ if ($id === false || $id === null || $id < 1) {
 include('./dati_db.inc');
 
 try {
-  $connect = mysqli_connect($host, $username, $password, $db_name);
+  $connect = isset($port)
+    ? mysqli_connect($host, $username, $password, $db_name, $port)
+    : mysqli_connect($host, $username, $password, $db_name);
   if (!$connect) {
     throw new RuntimeException('Connessione al database non riuscita.');
   }
