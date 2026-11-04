@@ -6,6 +6,13 @@
 session_start();
 
 $user = $_SESSION['utente'] ?? null;
+$deleteToken = '';
+if ($user === 'admin') {
+  if (empty($_SESSION['delete_associato_token'])) {
+    $_SESSION['delete_associato_token'] = bin2hex(random_bytes(32));
+  }
+  $deleteToken = $_SESSION['delete_associato_token'];
+}
 
 // Gestione permessi
 $limite = '';
@@ -235,11 +242,18 @@ $nome_completo_db = mysqli_real_escape_string($connect, $nome_completo);
     }
     ?>
 
-    <center>
-      <div class="text-center" style="margin-top:30px;">
-        <a href="./ricerca.php" class="btn-add">← Vai alla ricerca</a>
-      </div>
-    </center>
+    <div class="text-center" style="margin-top:30px; display:flex; justify-content:center; align-items:center; gap:12px; flex-wrap:wrap;">
+      <a href="./ricerca.php" class="btn-add">← Vai alla ricerca</a>
+      <?php if ($user === 'admin'): ?>
+        <form method="POST" action="./conf_canc_associato.php"
+              onsubmit="return confirm('Confermi la cancellazione definitiva di questa scheda associato? I dati anagrafici non saranno recuperabili. Le ricevute e le fatture già emesse non verranno cancellate.');"
+              style="display:inline-block; margin:0;">
+          <input type="hidden" name="id_anagrafe" value="<?php echo (int)$row['id_anagrafe']; ?>">
+          <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($deleteToken, ENT_QUOTES, 'UTF-8'); ?>">
+          <button type="submit" class="btn-delete">Cancella scheda</button>
+        </form>
+      <?php endif; ?>
+    </div>
 
   </div>
 </div>
