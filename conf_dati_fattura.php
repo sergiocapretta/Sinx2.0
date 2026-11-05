@@ -136,15 +136,35 @@ mysqli_stmt_bind_result($stmt, $totale);
 mysqli_stmt_fetch($stmt);
 mysqli_stmt_close($stmt);
 
-// 🔹 Aggiorna tabella totali
-if ($totale > 0) {
+// 🔹 Aggiorna il riepilogo: un solo record per fattura.
+// Il totale può essere positivo, negativo oppure zero.
+$sql_check = "SELECT COUNT(*) FROM $tb_tot_fattura WHERE id_tot_fatture = ?";
+$stmt = mysqli_prepare($connect, $sql_check);
+mysqli_stmt_bind_param($stmt, "i", $numfattura);
+mysqli_stmt_execute($stmt);
+mysqli_stmt_bind_result($stmt, $numero_riepiloghi);
+mysqli_stmt_fetch($stmt);
+mysqli_stmt_close($stmt);
+
+if ($numero_riepiloghi > 0) {
+    // Se esiste già il riepilogo, aggiorna il totale invece di crearne uno nuovo.
+    $sql_tot = "UPDATE $tb_tot_fattura
+                SET tot_fattura = ?, nome = ?, data = ?
+                WHERE id_tot_fatture = ?";
+    $stmt = mysqli_prepare($connect, $sql_tot);
+    mysqli_stmt_bind_param($stmt, "dssi", $totale, $nome, $data, $numfattura);
+} else {
+    // Prima voce della fattura: crea il riepilogo.
     $sql_tot = "INSERT INTO $tb_tot_fattura (id_tot_fatture, tot_fattura, nome, data)
                 VALUES (?, ?, ?, ?)";
     $stmt = mysqli_prepare($connect, $sql_tot);
     mysqli_stmt_bind_param($stmt, "idss", $numfattura, $totale, $nome, $data);
-    mysqli_stmt_execute($stmt);
-    mysqli_stmt_close($stmt);
 }
+
+if (!mysqli_stmt_execute($stmt)) {
+    die("<b>Errore aggiornamento riepilogo:</b> " . mysqli_stmt_error($stmt));
+}
+mysqli_stmt_close($stmt);
 
 // 🔹 Redirect finale
 mysqli_close($connect);
