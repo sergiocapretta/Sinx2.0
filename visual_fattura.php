@@ -163,7 +163,7 @@ $modpagamento = $fatturaData['modpagamento'] ?? 'N/D';
       </select>
 
       <label for="record">Nuovo valore*</label>
-      <input type="text" name="record" required>
+      <input type="number" name="record" step="any" required>
 
       <div class="form-buttons">
         <input type="submit" value="Modifica" class="btn-edit" <?php echo $limit; ?>>
