@@ -316,12 +316,17 @@ while ($Tultimoid = mysqli_fetch_array($Qultimoid)) {
                     LIMIT 1";
           $rs = mysqli_query($connect, $Query);
           while ($row = mysqli_fetch_array($rs)) {
+              $id_fattura = (int)$row['id_tot_fatture'];
               echo "
               <tr class='appointment-item'>
-                <td align='center'><small>{$row['id_tot_fatture']}</small></td>
-                <td align='center'><small>{$row['data']}</small></td>
-                <td align='center'><small>{$row['nome']}</small></td>
-                <td align='center'><small>{$row['tot_fattura']}</small></td>
+                <td align='center'>
+                  <form action='./stampa_fattura.php' method='POST' target='_blank' style='display:inline; margin:0;'>
+                    <button type='submit' name='id' value='" . $id_fattura . "' class='btn-mini' aria-label='Apri fattura numero " . $id_fattura . "'>" . $id_fattura . "</button>
+                  </form>
+                </td>
+                <td align='center'><small>" . htmlspecialchars($row['data'], ENT_QUOTES, 'UTF-8') . "</small></td>
+                <td align='center'><small>" . htmlspecialchars($row['nome'], ENT_QUOTES, 'UTF-8') . "</small></td>
+                <td align='center'><small>" . htmlspecialchars($row['tot_fattura'], ENT_QUOTES, 'UTF-8') . "</small></td>
               </tr>";
           }
       }
