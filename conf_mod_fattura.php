@@ -23,9 +23,17 @@ if ($user) {
 
 	$id_mod = $_POST['id_mod'];
 	$campo = $_POST['campo'];
-	$nrecord = $_POST['record'];
-
+	$nrecord = trim($_POST['record'] ?? '');
 $record = htmlspecialchars($nrecord, ENT_NOQUOTES, "UTF-8");
+
+// Consento importi negativi e decimali nel campo prezzo unitario.
+if ($campo === 'euro') {
+  $valoreNumerico = str_replace(',', '.', $nrecord);
+  if (!is_numeric($valoreNumerico)) {
+    die("Importo non valido");
+  }
+  $record = (string)(float)$valoreNumerico;
+}
 
 //Funzione per il redirect
 function redirect($url,$tempo = FALSE ){
@@ -100,7 +108,7 @@ if($result) {
   $row = mysqli_fetch_array($result);
 $totale = $row['totale_numero'];
 
-$totfatt="UPDATE tb_tot_fatture SET tot_fattura = '$totale', nome = '$nome', data = '$data' WHERE id = '$id_mod'";
+$totfatt="UPDATE tb_tot_fatture SET tot_fattura = '$totale', nome = '$nome', data = '$data' WHERE id_tot_fatture = '$numfattura'";
 $risultato = mysqli_query($connect, $totfatt);
 } else {
   echo mysqli_error();
