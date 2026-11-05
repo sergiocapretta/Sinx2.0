@@ -32,15 +32,18 @@ if (!$xml) {
 }
 
 // === DATI GENERALI ===
-$data = (string)$xml->FatturaElettronicaBody
-          ->DatiGenerali
-          ->DatiGeneraliDocumento
-          ->Data;
+$datiDocumento = $xml->FatturaElettronicaBody
+                  ->DatiGenerali
+                  ->DatiGeneraliDocumento;
 
-$totaleDoc = (float)$xml->FatturaElettronicaBody
-              ->DatiGenerali
-              ->DatiGeneraliDocumento
-              ->ImportoTotaleDocumento;
+$data = (string)$datiDocumento->Data;
+$tipoDocumento = (string)$datiDocumento->TipoDocumento;
+$segno = ($tipoDocumento === 'TD04') ? -1 : 1;
+
+$totaleDoc = (float)$datiDocumento->ImportoTotaleDocumento;
+if ($segno === -1) {
+  $totaleDoc = -abs($totaleDoc);
+}
 
 $modpaga = (string)$xml->FatturaElettronicaBody
              ->DatiPagamento
@@ -56,9 +59,9 @@ foreach ($xml->FatturaElettronicaBody->DatiBeniServizi->DettaglioLinee as $r) {
 
   $descr = mysqli_real_escape_string($connect, (string)$r->Descrizione);
   $qta   = (float)$r->Quantita;
-  $prezzo = (float)$r->PrezzoUnitario;
+  $prezzo = (float)$r->PrezzoUnitario * $segno;
   $iva   = (int)$r->AliquotaIVA;
-  $imponibile = (float)$r->PrezzoTotale;
+  $imponibile = (float)$r->PrezzoTotale * $segno;
   $tot = $imponibile + ($imponibile * $iva / 100);
 
   mysqli_query($connect, "
