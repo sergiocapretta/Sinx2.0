@@ -41,6 +41,12 @@ if ($user) {
 	$ndatanaaaa = $_POST['datanaaaa'];
 	$materia = $_POST['materia'];
 	$nnomerif = $_POST['nomerif']; //Codice fiscale
+	$denominazione = trim($_POST['denominazione'] ?? '');
+	$tipo_soggetto = $_POST['tipo_soggetto'] ?? 'persona_fisica';
+	$partita_iva = trim($_POST['partita_iva'] ?? '');
+	$PEC = trim($_POST['PEC'] ?? '');
+	$codice_destinatario = strtoupper(trim($_POST['codice_destinatario'] ?? ''));
+	$nazione = strtoupper(trim($_POST['nazione'] ?? 'IT'));
 	$email = $_POST['email'];
 	$nnote = $_POST['note'];
 	
@@ -90,9 +96,9 @@ $file_name = "personal.gif";
 // *** FINE MODULO GESTIONE IMMAGINE ***
 	include ('./dati_db.inc');
 	$connect = mysqli_connect("$host", "$username", "$password", "$db_name", $port ) or die("cannot connect DB");
-$tb_anagrafe = ('tb_anagrafe(ntessera, nome, cognome, indirizzo, cap, citta, provincia, tel, tel2, datan, classe, nomerif, materia, mansione, email, tipologia, note, immagine, associato)');
+$tb_anagrafe = 'tb_anagrafe';
 	if ($nome){ 
-		$sql="insert into $tb_anagrafe values('$tessera','$nome', '$cognome', '$indirizzo', '$cap', '$citta', '$provincia', '$tel', '$tel2', '$datan', '', '$nomerif', '$materia', '', '$email', 'Ins', '$note', '$file_name', '$associato')"; //inserisco i valori nel database
+		$sql="INSERT INTO $tb_anagrafe (ntessera,nome,cognome,indirizzo,cap,citta,provincia,tel,tel2,datan,classe,nomerif,materia,mansione,email,tipologia,note,immagine,associato,denominazione,tipo_soggetto,partita_iva,PEC,codice_destinatario,nazione) VALUES ('$tessera','$nome','$cognome','$indirizzo','$cap','$citta','$provincia','$tel','$tel2','$datan','','$nomerif','$materia','','$email','Ins','$note','$file_name','$associato','$denominazione','$tipo_soggetto','$partita_iva','$PEC','$codice_destinatario','$nazione')";
 		$result=mysqli_query($connect, $sql);
 		header('location: ./conferma.php?rif=InsAnagrIns'); //Vado alla pagina di conferma
 	}else{ 
