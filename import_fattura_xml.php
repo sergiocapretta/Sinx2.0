@@ -38,6 +38,9 @@ $datiDocumento = $xml->FatturaElettronicaBody
 
 $data = (string)$datiDocumento->Data;
 $tipoDocumento = (string)$datiDocumento->TipoDocumento;
+$numeroDocumento = (string)$datiDocumento->Numero;
+$tipoDocumentoDb = mysqli_real_escape_string($connect, $tipoDocumento);
+$numeroDocumentoDb = mysqli_real_escape_string($connect, $numeroDocumento);
 $segno = ($tipoDocumento === 'TD04') ? -1 : 1;
 
 $totaleDoc = (float)$datiDocumento->ImportoTotaleDocumento;
@@ -75,9 +78,9 @@ foreach ($xml->FatturaElettronicaBody->DatiBeniServizi->DettaglioLinee as $r) {
 // === TOTALE FATTURA ===
 mysqli_query($connect, "
   INSERT INTO tb_tot_fatture
-  (id_tot_fatture, nome, data, tot_fattura)
+  (id_tot_fatture, nome, data, tot_fattura, tipo_documento, numero_documento)
   VALUES
-  ($id_fatt, '$nome_cliente', '$data', $totaleDoc)
+  ($id_fatt, '$nome_cliente', '$data', $totaleDoc, '$tipoDocumentoDb', '$numeroDocumentoDb')
 ");
 
 mysqli_close($connect);
