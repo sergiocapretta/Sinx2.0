@@ -100,6 +100,29 @@ include($linguadaticom);
   <label for="nomerif"><?php echo $Lcodfiscale; ?></label>
   <input name="nomerif" id="nomerif" type="text" maxlength="50" data-maxlength="50" placeholder="Codice fiscale">
 
+  <label for="denominazione">Denominazione / Ragione sociale</label>
+  <input name="denominazione" id="denominazione" type="text" maxlength="200" data-maxlength="200">
+
+  <label for="tipo_soggetto">Tipo soggetto per fatturazione</label>
+  <select name="tipo_soggetto" id="tipo_soggetto">
+    <option value="persona_fisica" selected>Persona fisica</option>
+    <option value="soggetto_privato">Azienda / altro soggetto privato</option>
+    <option value="pubblica_amministrazione">Pubblica amministrazione</option>
+  </select>
+
+  <label for="partita_iva">Partita IVA</label>
+  <input name="partita_iva" id="partita_iva" type="text" maxlength="20" data-maxlength="20">
+
+  <label for="PEC">PEC</label>
+  <input name="PEC" id="PEC" type="email" maxlength="100" data-maxlength="100">
+
+  <label for="codice_destinatario">Codice destinatario SDI / ufficio IPA</label>
+  <input name="codice_destinatario" id="codice_destinatario" type="text" maxlength="7" data-maxlength="7">
+  <small>Privati: 7 caratteri o 0000000. PA: codice IPA di 6 caratteri.</small>
+
+  <label for="nazione">Nazione</label>
+  <input name="nazione" id="nazione" type="text" maxlength="2" data-maxlength="2" value="IT" placeholder="IT">
+
   <!-- Associato -->
   <label>
     <input type="checkbox" name="check" checked value="1">
