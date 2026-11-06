@@ -299,17 +299,19 @@ while ($Tultimoid = mysqli_fetch_array($Qultimoid)) {
   <div class="card">
     <h3 class="card-title"><?php echo $Lelencofatture; ?></h3>
 
-    <table class="appointments appointments-4col" align='center' cellpadding='4' cellspacing='0' width='100%'>
+    <table class="appointments appointments-6col" align='center' cellpadding='4' cellspacing='0' width='100%'>
       <tr class="appointments-header">
         <th><?php echo $Lnumerofattura; ?></th>
         <th><?php echo $Ldata; ?></th>
+        <th>Tipo documento</th>
+        <th>Numero documento</th>
         <th><?php echo $Lnomecliente; ?></th>
         <th><?php echo $Ltotivaincl; ?></th>
       </tr>
 
       <?php
       for ($a = 1; $a <= $ultimoid; $a++) {
-          $Query = "SELECT id_tot_fatture, tot_fattura, nome, data
+          $Query = "SELECT id_tot_fatture, tot_fattura, nome, data, tipo_documento, numero_documento
                     FROM tb_tot_fatture
                     WHERE id_tot_fatture = $a
                     ORDER BY tot_fattura DESC, id_tot_fatture
@@ -325,6 +327,8 @@ while ($Tultimoid = mysqli_fetch_array($Qultimoid)) {
                   </form>
                 </td>
                 <td align='center'><small>" . htmlspecialchars($row['data'], ENT_QUOTES, 'UTF-8') . "</small></td>
+                <td align='center'><small>" . htmlspecialchars($row['tipo_documento'] ?? '', ENT_QUOTES, 'UTF-8') . "</small></td>
+                <td align='center'><small>" . htmlspecialchars($row['numero_documento'] ?? '', ENT_QUOTES, 'UTF-8') . "</small></td>
                 <td align='center'><small>" . htmlspecialchars($row['nome'], ENT_QUOTES, 'UTF-8') . "</small></td>
                 <td align='center'><small>" . htmlspecialchars($row['tot_fattura'], ENT_QUOTES, 'UTF-8') . "</small></td>
               </tr>";
