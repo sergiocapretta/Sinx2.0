@@ -135,7 +135,6 @@ die ("");
         mysqli_stmt_bind_param($stmt, "si", $record, $id_mod);
         $result = mysqli_stmt_execute($stmt);
         mysqli_stmt_close($stmt);
-		$result=mysqli_query($connect, $sql);
 
 	if (!$result) {
  die(header('location: ./errore.php?rif=ricerca'));//"Errore nella query $query: " . mysql_error());
