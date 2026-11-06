@@ -108,14 +108,14 @@ $tb_anagrafe = 'tb_anagrafe';
             (ntessera,nome,cognome,indirizzo,cap,citta,provincia,tel,tel2,datan,classe,nomerif,materia,mansione,email,tipologia,note,immagine,associato,denominazione,tipo_soggetto,partita_iva,PEC,codice_destinatario,nazione)
             VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
         $stmt = mysqli_prepare($connect, $sql);
+        $classeVuota = '';
+        $mansioneVuota = '';
+        $tipologiaIns = 'Ins';
         mysqli_stmt_bind_param($stmt, "sssssssssssssssssssssssss",
             $tessera,$nome,$cognome,$indirizzo,$cap,$citta,$provincia,$tel,$tel2,$datan,
             $classeVuota,$nomerif,$materia,$mansioneVuota,$email,$tipologiaIns,$note,$file_name,
             $associato,$denominazione,$tipo_soggetto,$partita_iva,$PEC,$codice_destinatario,$nazione
         );
-        $classeVuota = '';
-        $mansioneVuota = '';
-        $tipologiaIns = 'Ins';
         $result = mysqli_stmt_execute($stmt);
         mysqli_stmt_close($stmt);
 		header('location: ./conferma.php?rif=InsAnagrIns'); //Vado alla pagina di conferma
