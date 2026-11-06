@@ -30,6 +30,9 @@ if ($user == 'admin') {
 	$tel = $_POST['tel'];
 	$fax = $_POST['fax'];
 	$cf = $_POST['cf'];
+	$partita_iva = trim($_POST['partita_iva'] ?? '');
+	$regime_fiscale = trim($_POST['regime_fiscale'] ?? '');
+	$nazione = strtoupper(trim($_POST['nazione'] ?? 'IT'));
 	$email = $_POST['email'];
 	$webmail = $_POST['webmail'];
 	$PEC = $_POST['PEC'];
@@ -65,8 +68,25 @@ function redirect($url,$tempo = FALSE ){
 //CONTROLLO DEI CAMPI
 
  
-		$query="UPDATE tb_anagrafe_associaz SET nome='$nome', indirizzo='$indirizzo', numero='$numero', cap='$cap', citta='$citta', provincia='$provincia', tel='$tel', fax='$fax', cf='$cf', email='$email', webmail='$webmail', PEC='$PEC', webPEC='$webPEC', sito='$sito', facebook='$facebook', instagram='$instagram', twitter='$twitter', youtube='$youtube', banca='$banca', IBAN='$IBAN', BIC='$BIC', HomeBanking='$HomeBanking', IscrizioneODVoAPS='$IscrizioneODVoAPS' WHERE id_anagrafe = '1'"; //inserisco i valori nel database
-		$result=mysqli_query($connect, $query);
+        $query = "UPDATE tb_anagrafe_associaz SET
+            nome=?, indirizzo=?, numero=?, cap=?, citta=?, provincia=?, nazione=?,
+            tel=?, fax=?, cf=?, partita_iva=?, regime_fiscale=?, email=?, webmail=?,
+            PEC=?, webPEC=?, sito=?, facebook=?, instagram=?, twitter=?, youtube=?,
+            banca=?, IBAN=?, BIC=?, HomeBanking=?, IscrizioneODVoAPS=?
+            WHERE id_anagrafe = 1";
+        $stmt = mysqli_prepare($connect, $query);
+        if ($stmt) {
+            mysqli_stmt_bind_param($stmt, "ssssssssssssssssssssssssss",
+                $nome, $indirizzo, $numero, $cap, $citta, $provincia, $nazione,
+                $tel, $fax, $cf, $partita_iva, $regime_fiscale, $email, $webmail,
+                $PEC, $webPEC, $sito, $facebook, $instagram, $twitter, $youtube,
+                $banca, $IBAN, $BIC, $HomeBanking, $IscrizioneODVoAPS
+            );
+            $result = mysqli_stmt_execute($stmt);
+            mysqli_stmt_close($stmt);
+        } else {
+            $result = false;
+        }
 
 	if (!$result) {
 		header('location: errore.php?rif=dati_Associaz&msg='.$connect->error); //Vado alla pagina di errore
