@@ -21,6 +21,9 @@ $provincia = trim($_POST['provincia'] ?? '');
 $tel       = trim($_POST['tel'] ?? '');
 $fax       = trim($_POST['fax'] ?? '');
 $cf        = trim($_POST['cf'] ?? '');
+$partita_iva = trim($_POST['partita_iva'] ?? '');
+$regime_fiscale = trim($_POST['regime_fiscale'] ?? '');
+$nazione = strtoupper(trim($_POST['nazione'] ?? 'IT'));
 $email     = trim($_POST['email'] ?? '');
 $webmail   = trim($_POST['webmail'] ?? '');
 $sito      = trim($_POST['sito'] ?? '');
@@ -37,8 +40,8 @@ $browser = $_SERVER['HTTP_USER_AGENT'];
 
 // Preparo la query
 $sql = "INSERT INTO tb_anagrafe_associaz
-    (nome, indirizzo, numero, cap, citta, provincia, tel, fax, cf, email, webmail, sito)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    (nome, indirizzo, numero, cap, citta, provincia, tel, fax, cf, partita_iva, regime_fiscale, nazione, email, webmail, sito)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 // Preparo lo statement
 $stmt = mysqli_prepare($link, $sql);
@@ -46,9 +49,9 @@ if (!$stmt) {
     die("Errore nella preparazione della query: " . mysqli_error($link));
 }
 
-mysqli_stmt_bind_param($stmt, "ssssssssssss",
+mysqli_stmt_bind_param($stmt, "sssssssssssssss",
     $nnome, $indirizzo, $numero, $cap, $citta, $provincia,
-    $tel, $fax, $cf, $email, $webmail, $sito
+    $tel, $fax, $cf, $partita_iva, $regime_fiscale, $nazione, $email, $webmail, $sito
 );
 
 if (!mysqli_stmt_execute($stmt)) {
