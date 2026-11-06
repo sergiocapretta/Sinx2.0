@@ -112,7 +112,29 @@ die ("");
 
 		}
  
-		$sql="UPDATE tb_anagrafe SET $campo = '$record' WHERE id_anagrafe = '$id_mod'"; //inserisco i valori nel database
+		$campi_consentiti = array(
+            'ntessera','nome','cognome','indirizzo','cap','citta','provincia',
+            'tel','tel2','datan','materia','classe','nomerif','mansione',
+            'email','note','immagine','associato','denominazione','tipo_soggetto',
+            'partita_iva','PEC','codice_destinatario','nazione'
+        );
+        if (!in_array($campo, $campi_consentiti, true)) {
+            die('Campo non consentito.');
+        }
+        if ($campo === 'tipo_soggetto' && !in_array($record, array('persona_fisica','soggetto_privato','pubblica_amministrazione'), true)) {
+            die('Tipo soggetto non valido.');
+        }
+        if ($campo === 'codice_destinatario') {
+            $record = strtoupper(trim($record));
+            if ($record !== '' && !preg_match('/^[A-Z0-9]{6,7}$/', $record)) {
+                die('Codice destinatario non valido.');
+            }
+        }
+        $sql = "UPDATE tb_anagrafe SET `$campo` = ? WHERE id_anagrafe = ?";
+        $stmt = mysqli_prepare($connect, $sql);
+        mysqli_stmt_bind_param($stmt, "si", $record, $id_mod);
+        $result = mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
 		$result=mysqli_query($connect, $sql);
 
 	if (!$result) {
