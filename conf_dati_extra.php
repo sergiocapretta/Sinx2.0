@@ -124,12 +124,12 @@ $sql = "INSERT INTO $tb_anagrafe
             (ntessera,nome,cognome,indirizzo,cap,citta,provincia,tel,tel2,mansione,email,nomerif,datan,tipologia,note,immagine,denominazione,tipo_soggetto,partita_iva,PEC,codice_destinatario,nazione)
             VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
         $stmt = mysqli_prepare($connect, $sql);
+        $tipologiaExtra = 'Extra';
         mysqli_stmt_bind_param($stmt, "ssssssssssssssssssssss",
             $codice,$nome,$cognome,$indirizzo,$cap,$citta,$provincia,$tel,$tel2,$mansione,
             $email,$nomerif,$datan,$tipologiaExtra,$note,$file_name,$denominazione,$tipo_soggetto,
             $partita_iva,$PEC,$codice_destinatario,$nazione
         );
-        $tipologiaExtra = 'Extra';
         $result = mysqli_stmt_execute($stmt);
         mysqli_stmt_close($stmt);
 
