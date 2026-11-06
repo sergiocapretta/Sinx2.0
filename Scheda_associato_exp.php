@@ -43,8 +43,9 @@ if ($user == 'admin') {
 include('./top.inc');
 include('./menu.inc');
 
-$iniz = $_POST['iniziale'];
-$associato = $_POST['associato'];
+$iniz = $_REQUEST['iniziale'] ?? '';
+$associato = (int)($_REQUEST['associato'] ?? 0);
+if ($associato <= 0) { die('Identificativo associato non valido.'); }
 
 include('./dati_db.inc');
 $connect = mysqli_connect($host, $username, $password, $db_name, $port)
@@ -100,6 +101,8 @@ while ($row = mysqli_fetch_array($rs)) :
 
     <form action="./conf_mod_anagrafe.php" method="POST" class="sinx-form">
       <input type="hidden" name="id_anagrafe" value="<?php echo (int)$row['id_anagrafe']; ?>">
+      <input type="hidden" name="associato" value="<?php echo (int)$row['id_anagrafe']; ?>">
+      <input type="hidden" name="iniziale" value="<?php echo htmlspecialchars($iniz, ENT_QUOTES, 'UTF-8'); ?>">
 
       <label>Tessera</label>
       <input type="text" name="ntessera" value="<?php echo htmlspecialchars($row['ntessera'] ?? '', ENT_QUOTES, 'UTF-8'); ?>" <?php echo $limit; ?>>
