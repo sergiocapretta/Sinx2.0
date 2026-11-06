@@ -44,7 +44,7 @@ include('./top.inc');
 include('./menu.inc');
 
 $iniz = $_REQUEST['iniziale'] ?? '';
-$associato = (int)($_REQUEST['associato'] ?? 0);
+$associato = (int)($_GET['associato'] ?? $_POST['associato'] ?? 0);
 if ($associato <= 0) { die('Identificativo associato non valido.'); }
 
 include('./dati_db.inc');
