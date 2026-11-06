@@ -59,6 +59,12 @@ if ($user) {
 	$PEC = trim($_POST['PEC'] ?? '');
 	$codice_destinatario = strtoupper(trim($_POST['codice_destinatario'] ?? ''));
 	$nazione = strtoupper(trim($_POST['nazione'] ?? 'IT'));
+	$tipi_validi = array('persona_fisica', 'soggetto_privato', 'pubblica_amministrazione');
+	if (!in_array($tipo_soggetto, $tipi_validi, true)) { $tipo_soggetto = 'persona_fisica'; }
+	if ($codice_destinatario !== '') {
+		$lunghezza_codice = ($tipo_soggetto === 'pubblica_amministrazione') ? 6 : 7;
+		if (!preg_match('/^[A-Z0-9]{' . $lunghezza_codice . '}$/', $codice_destinatario)) { die('Codice destinatario non valido per il tipo di soggetto selezionato.'); }
+	}
 
 $ndatan = ($ndatangg."-".$ndatanmm."-".$ndatanaaaa);
 
@@ -114,8 +120,18 @@ $file_name = "personal.gif";
 $tb_anagrafe = 'tb_anagrafe';
 
 	if ($nome){ 
-$sql="INSERT INTO $tb_anagrafe (ntessera,nome,cognome,indirizzo,cap,citta,provincia,tel,tel2,mansione,email,nomerif,datan,tipologia,note,immagine,denominazione,tipo_soggetto,partita_iva,PEC,codice_destinatario,nazione) VALUES ('$codice','$nome','$cognome','$indirizzo','$cap','$citta','$provincia','$tel','$tel2','$mansione','$email','$nomerif','$datan','Extra','$note','$file_name','$denominazione','$tipo_soggetto','$partita_iva','$PEC','$codice_destinatario','$nazione')";
-		$result=mysqli_query($connect, $sql);
+$sql = "INSERT INTO $tb_anagrafe
+            (ntessera,nome,cognome,indirizzo,cap,citta,provincia,tel,tel2,mansione,email,nomerif,datan,tipologia,note,immagine,denominazione,tipo_soggetto,partita_iva,PEC,codice_destinatario,nazione)
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        $stmt = mysqli_prepare($connect, $sql);
+        mysqli_stmt_bind_param($stmt, "ssssssssssssssssssssss",
+            $codice,$nome,$cognome,$indirizzo,$cap,$citta,$provincia,$tel,$tel2,$mansione,
+            $email,$nomerif,$datan,$tipologiaExtra,$note,$file_name,$denominazione,$tipo_soggetto,
+            $partita_iva,$PEC,$codice_destinatario,$nazione
+        );
+        $tipologiaExtra = 'Extra';
+        $result = mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
 
 		header('location: ./conferma.php?rif=InsAnagrExtra'); //Vado alla pagina di conferma
 	}else{ 
