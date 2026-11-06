@@ -98,69 +98,93 @@ while ($row = mysqli_fetch_array($rs)) :
       </form>
     </div>
 
-    <div class="sinx-form">
+    <form action="./conf_mod_anagrafe.php" method="POST" class="sinx-form">
+      <input type="hidden" name="id_anagrafe" value="<?php echo (int)$row['id_anagrafe']; ?>">
+
       <label>Tessera</label>
-      <input type="text" value="<?php echo htmlspecialchars($row['ntessera']); ?>" readonly>
+      <input type="text" name="ntessera" value="<?php echo htmlspecialchars($row['ntessera'] ?? '', ENT_QUOTES, 'UTF-8'); ?>" <?php echo $limit; ?>>
+
+      <label>Nome</label>
+      <input type="text" name="nome" value="<?php echo htmlspecialchars($row['nome'] ?? '', ENT_QUOTES, 'UTF-8'); ?>" required <?php echo $limit; ?>>
+
+      <label>Cognome</label>
+      <input type="text" name="cognome" value="<?php echo htmlspecialchars($row['cognome'] ?? '', ENT_QUOTES, 'UTF-8'); ?>" <?php echo $limit; ?>>
 
       <label>Indirizzo</label>
-      <input type="text" value="<?php echo htmlspecialchars($row['indirizzo']); ?>" readonly>
+      <input type="text" name="indirizzo" value="<?php echo htmlspecialchars($row['indirizzo'] ?? '', ENT_QUOTES, 'UTF-8'); ?>" <?php echo $limit; ?>>
 
       <label>Comune</label>
-      <input type="text" value="<?php echo htmlspecialchars($row['cap']); ?>" readonly>
+      <input type="text" name="cap" value="<?php echo htmlspecialchars($row['cap'] ?? '', ENT_QUOTES, 'UTF-8'); ?>" <?php echo $limit; ?>>
 
       <label>Regione</label>
-      <input type="text" value="<?php echo htmlspecialchars($row['citta']); ?>" readonly>
+      <input type="text" name="citta" value="<?php echo htmlspecialchars($row['citta'] ?? '', ENT_QUOTES, 'UTF-8'); ?>" <?php echo $limit; ?>>
 
       <label>Provincia</label>
-      <input type="text" value="<?php echo htmlspecialchars($row['provincia']); ?>" readonly>
+      <input type="text" name="provincia" value="<?php echo htmlspecialchars($row['provincia'] ?? '', ENT_QUOTES, 'UTF-8'); ?>" <?php echo $limit; ?>>
 
       <label>Telefono</label>
-      <input type="text" value="<?php echo htmlspecialchars($row['tel']); ?>" readonly>
+      <input type="text" name="tel" value="<?php echo htmlspecialchars($row['tel'] ?? '', ENT_QUOTES, 'UTF-8'); ?>" <?php echo $limit; ?>>
 
       <label>Telefono 2</label>
-      <input type="text" value="<?php echo htmlspecialchars($row['tel2']); ?>" readonly>
+      <input type="text" name="tel2" value="<?php echo htmlspecialchars($row['tel2'] ?? '', ENT_QUOTES, 'UTF-8'); ?>" <?php echo $limit; ?>>
 
       <label>Email</label>
-      <input type="text" value="<?php echo htmlspecialchars($row['email']); ?>" readonly>
+      <input type="email" name="email" value="<?php echo htmlspecialchars($row['email'] ?? '', ENT_QUOTES, 'UTF-8'); ?>" <?php echo $limit; ?>>
 
       <label>Tipo Socio</label>
-      <input type="text" value="<?php echo htmlspecialchars($row['materia']); ?>" readonly>
+      <input type="text" name="materia" value="<?php echo htmlspecialchars($row['materia'] ?? '', ENT_QUOTES, 'UTF-8'); ?>" <?php echo $limit; ?>>
 
       <label>Codice Fiscale</label>
-      <input type="text" value="<?php echo htmlspecialchars($row['nomerif']); ?>" readonly>
+      <input type="text" name="nomerif" value="<?php echo htmlspecialchars($row['nomerif'] ?? '', ENT_QUOTES, 'UTF-8'); ?>" <?php echo $limit; ?>>
 
       <label>Denominazione / Ragione sociale</label>
-      <input type="text" value="<?php echo htmlspecialchars($row['denominazione'] ?? ''); ?>" readonly>
+      <input type="text" name="denominazione" maxlength="200" value="<?php echo htmlspecialchars($row['denominazione'] ?? '', ENT_QUOTES, 'UTF-8'); ?>" <?php echo $limit; ?>>
 
       <label>Tipo soggetto fiscale</label>
-      <input type="text" value="<?php echo htmlspecialchars($row['tipo_soggetto'] ?? ''); ?>" readonly>
+      <select name="tipo_soggetto" <?php echo $limit; ?>>
+        <?php
+        $tipiSoggetto = array(
+          'persona_fisica' => 'Persona fisica',
+          'soggetto_privato' => 'Azienda / altro soggetto privato',
+          'pubblica_amministrazione' => 'Pubblica amministrazione'
+        );
+        $tipoCorrente = $row['tipo_soggetto'] ?? 'persona_fisica';
+        foreach ($tipiSoggetto as $codice => $descrizione) {
+          $selected = ($tipoCorrente === $codice) ? 'selected' : '';
+          echo '<option value="' . htmlspecialchars($codice, ENT_QUOTES, 'UTF-8') . '" ' . $selected . '>' . htmlspecialchars($descrizione, ENT_QUOTES, 'UTF-8') . '</option>';
+        }
+        ?>
+      </select>
 
       <label>Partita IVA</label>
-      <input type="text" value="<?php echo htmlspecialchars($row['partita_iva'] ?? ''); ?>" readonly>
+      <input type="text" name="partita_iva" maxlength="20" value="<?php echo htmlspecialchars($row['partita_iva'] ?? '', ENT_QUOTES, 'UTF-8'); ?>" <?php echo $limit; ?>>
 
       <label>PEC</label>
-      <input type="text" value="<?php echo htmlspecialchars($row['PEC'] ?? ''); ?>" readonly>
+      <input type="email" name="PEC" maxlength="100" value="<?php echo htmlspecialchars($row['PEC'] ?? '', ENT_QUOTES, 'UTF-8'); ?>" <?php echo $limit; ?>>
 
-      <label>Codice destinatario / IPA</label>
-      <input type="text" value="<?php echo htmlspecialchars($row['codice_destinatario'] ?? ''); ?>" readonly>
+      <label>Codice destinatario SDI / ufficio IPA</label>
+      <input type="text" name="codice_destinatario" maxlength="7" value="<?php echo htmlspecialchars($row['codice_destinatario'] ?? '', ENT_QUOTES, 'UTF-8'); ?>" <?php echo $limit; ?>>
+      <small>Privati: 7 caratteri o 0000000. Pubbliche amministrazioni: codice IPA di 6 caratteri.</small>
 
-      <label>Nazione</label>
-      <input type="text" value="<?php echo htmlspecialchars($row['nazione'] ?? ''); ?>" readonly>
+      <label>Nazione (codice ISO a 2 lettere)</label>
+      <input type="text" name="nazione" maxlength="2" value="<?php echo htmlspecialchars($row['nazione'] ?? 'IT', ENT_QUOTES, 'UTF-8'); ?>" <?php echo $limit; ?>>
 
       <label>Data Nascita</label>
-      <input type="text" value="<?php echo htmlspecialchars($row['datan']); ?>" readonly>
+      <input type="text" name="datan" value="<?php echo htmlspecialchars($row['datan'] ?? '', ENT_QUOTES, 'UTF-8'); ?>" <?php echo $limit; ?>>
 
       <label>Carica Amministrativa</label>
-      <input type="text" value="<?php echo htmlspecialchars($row['classe']); ?>" readonly>
+      <input type="text" name="classe" value="<?php echo htmlspecialchars($row['classe'] ?? '', ENT_QUOTES, 'UTF-8'); ?>" <?php echo $limit; ?>>
 
       <label>Mansione</label>
-      <input type="text" value="<?php echo htmlspecialchars($row['mansione']); ?>" readonly>
+      <input type="text" name="mansione" value="<?php echo htmlspecialchars($row['mansione'] ?? '', ENT_QUOTES, 'UTF-8'); ?>" <?php echo $limit; ?>>
 
       <label>Note</label>
-      <textarea rows="3" readonly><?php echo htmlspecialchars($row['note']); ?></textarea>
-    </div>
-  </div>
-</div>
+      <textarea name="note" rows="3" <?php echo $limit; ?>><?php echo htmlspecialchars($row['note'] ?? '', ENT_QUOTES, 'UTF-8'); ?></textarea>
+
+      <div class="form-buttons" style="justify-content:center;">
+        <button type="submit" class="btn-edit" <?php echo $limit; ?>>Salva modifiche</button>
+      </div>
+    </form>
 
 <hr class="divider">
 
