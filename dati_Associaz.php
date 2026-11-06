@@ -71,6 +71,44 @@ $row = mysqli_fetch_array($rs);
       <label><?php echo $Lcfpi; ?></label>
       <input type="text" name="cf" value="<?php echo htmlspecialchars($row['cf']); ?>" <?php echo $limit; ?>>
 
+      <label>Partita IVA</label>
+      <input type="text" name="partita_iva" maxlength="20" value="<?php echo htmlspecialchars($row['partita_iva'] ?? ''); ?>" <?php echo $limit; ?>>
+
+      <label>Regime fiscale (FatturaPA)</label>
+      <select name="regime_fiscale" <?php echo $limit; ?>>
+        <?php
+        $regimi = array(
+          '' => '-- Seleziona --',
+          'RF01' => 'RF01 - Ordinario',
+          'RF02' => 'RF02 - Contribuenti minimi',
+          'RF04' => 'RF04 - Agricoltura',
+          'RF05' => 'RF05 - Vendita sali e tabacchi',
+          'RF06' => 'RF06 - Commercio fiammiferi',
+          'RF07' => 'RF07 - Editoria',
+          'RF08' => 'RF08 - Gestione servizi telefonia pubblica',
+          'RF09' => 'RF09 - Rivendita documenti di trasporto pubblico',
+          'RF10' => 'RF10 - Intrattenimenti e giochi',
+          'RF11' => 'RF11 - Agenzie viaggi e turismo',
+          'RF12' => 'RF12 - Agriturismo',
+          'RF13' => 'RF13 - Vendite a domicilio',
+          'RF14' => 'RF14 - Rivendita beni usati',
+          'RF15' => 'RF15 - Agenzie vendite all’asta',
+          'RF16' => 'RF16 - IVA per cassa P.A.',
+          'RF17' => 'RF17 - IVA per cassa',
+          'RF18' => 'RF18 - Altro',
+          'RF19' => 'RF19 - Regime forfettario'
+        );
+        foreach ($regimi as $codice => $descrizione) {
+          $selected = (($row['regime_fiscale'] ?? '') === $codice) ? 'selected' : '';
+          echo '<option value="' . htmlspecialchars($codice) . '" ' . $selected . '>' . htmlspecialchars($descrizione) . '</option>';
+        }
+        ?>
+      </select>
+
+      <label>Nazione (codice ISO a 2 lettere)</label>
+      <input type="text" name="nazione" maxlength="2" value="<?php echo htmlspecialchars($row['nazione'] ?? 'IT'); ?>" placeholder="IT" <?php echo $limit; ?>>
+
+
       <label>Email</label>
       <input type="email" name="email" placeholder="email@socio.xxx" value="<?php echo htmlspecialchars($row['email']); ?>" <?php echo $limit; ?>>
 
