@@ -74,6 +74,7 @@ $idprec = $row['id_anagrafe'];
 <hr class="divider">
 
 <?php
+$nascondi_modifica_singola = true;
 include('./modifica_cancella.inc');
 
 $Query_nome = "SELECT * FROM tb_anagrafe WHERE id_anagrafe = $associato";
@@ -188,6 +189,9 @@ while ($row = mysqli_fetch_array($rs)) :
         <button type="submit" class="btn-edit" <?php echo $limit; ?>>Salva modifiche</button>
       </div>
     </form>
+    </div>
+  </div>
+</div>
 
 <hr class="divider">
 
