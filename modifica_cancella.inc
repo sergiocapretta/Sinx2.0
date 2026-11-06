@@ -32,7 +32,8 @@ Sinx for Association - Gestionale per Associazioni no-profit
 =========================================================================+
 -->
 <?php
-$associato = $_POST['associato'];
+$associato = (int)($_REQUEST['associato'] ?? 0);
+if ($associato <= 0) { die('Identificativo associato non valido.'); }
 
 $Query_nome = "SELECT * FROM tb_anagrafe WHERE id_anagrafe = $associato";
 $rs = mysqli_query($connect, $Query_nome)
