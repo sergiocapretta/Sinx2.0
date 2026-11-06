@@ -48,8 +48,26 @@ include('./top.inc');
         <td><input name="fax" size="30%" type="tel"></td>
       </tr>
       <tr>
-        <td><font color="red">Codice Fiscale ed eventuale Partita IVA:</font></td>
+        <td><font color="red">Codice Fiscale:</font></td>
         <td><input name="cf" size="30%" type="text" required></td>
+      </tr>
+      <tr>
+        <td>Partita IVA:</td>
+        <td><input name="partita_iva" size="30%" type="text"></td>
+      </tr>
+      <tr>
+        <td>Regime fiscale (FatturaPA):</td>
+        <td>
+          <select name="regime_fiscale">
+            <option value="">Seleziona il regime fiscale</option>
+            <option value="RF01">RF01 - Ordinario</option>
+            <option value="RF19">RF19 - Forfettario</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td>Nazione (codice ISO):</td>
+        <td><input name="nazione" size="5" type="text" maxlength="2" value="IT"></td>
       </tr>
       <tr>
         <td>Indirizzo e-mail:</td>
