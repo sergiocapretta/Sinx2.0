@@ -68,6 +68,7 @@ $idprec = $row['id_anagrafe'];
 
 <hr class="divider">
 
+<?php if (empty($nascondi_modifica_singola)) : ?>
 <!-- === CARD MODIFICA === -->
 <div class="content-section">
   <div class="card">
@@ -120,3 +121,4 @@ $idprec = $row['id_anagrafe'];
     </form>
   </div>
 </div>
+<?php endif; ?>
