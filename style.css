@@ -644,6 +644,15 @@ input.btn-delete[type="submit"]:hover {
   grid-template-columns: 10% 20% 30% 40%;
 }
 
+/* 6 colonne Elenco fatture */
+.appointments-6col .appointments-header,
+.appointments-6col .appointment-item {
+  display: grid;
+  grid-template-columns: 9% 13% 13% 15% 28% 22%;
+  align-items: center;
+  gap: 4px;
+}
+
 /* 5 colonne Ricevute */
 .appointments-5col .appointments-header,
 .appointments-5col .appointment-item {
