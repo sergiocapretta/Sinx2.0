@@ -129,6 +129,24 @@ while ($row = mysqli_fetch_array($rs)) :
       <label>Codice Fiscale</label>
       <input type="text" value="<?php echo htmlspecialchars($row['nomerif']); ?>" readonly>
 
+      <label>Denominazione / Ragione sociale</label>
+      <input type="text" value="<?php echo htmlspecialchars($row['denominazione'] ?? ''); ?>" readonly>
+
+      <label>Tipo soggetto fiscale</label>
+      <input type="text" value="<?php echo htmlspecialchars($row['tipo_soggetto'] ?? ''); ?>" readonly>
+
+      <label>Partita IVA</label>
+      <input type="text" value="<?php echo htmlspecialchars($row['partita_iva'] ?? ''); ?>" readonly>
+
+      <label>PEC</label>
+      <input type="text" value="<?php echo htmlspecialchars($row['PEC'] ?? ''); ?>" readonly>
+
+      <label>Codice destinatario / IPA</label>
+      <input type="text" value="<?php echo htmlspecialchars($row['codice_destinatario'] ?? ''); ?>" readonly>
+
+      <label>Nazione</label>
+      <input type="text" value="<?php echo htmlspecialchars($row['nazione'] ?? ''); ?>" readonly>
+
       <label>Data Nascita</label>
       <input type="text" value="<?php echo htmlspecialchars($row['datan']); ?>" readonly>
 
