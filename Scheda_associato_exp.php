@@ -36,7 +36,7 @@ session_start();
 $user = $_SESSION['utente'];
 if ($user == 'admin') {
   $limit = '';
-} elseif ($user == 'limitato' || $user == 'operatore') {
+} else {
   $limit = 'disabled';
 }
 
