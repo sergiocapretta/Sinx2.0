@@ -28,6 +28,7 @@ include($linguadaticom);
 ?>
 
 <!-- 🔹 DATI COMUNI DEL SOCIO / COLLABORATORE -->
+<!-- Aggiornamento dati fiscali in corso -->
 <div class="sinx-form">
 
   <!-- Immagine -->
