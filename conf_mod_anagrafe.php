@@ -71,7 +71,11 @@ if (!$ok) {
     die('Errore durante il salvataggio dei dati anagrafici.');
 }
 
-$iniziale = rawurlencode($_POST['iniziale'] ?? '');
-header('Location: ./Scheda_associato_exp.php?associato=' . $id . '&iniziale=' . $iniziale);
+$iniziale = trim($_POST['iniziale'] ?? '');
+$url = './Scheda_associato_exp.php?associato=' . $id;
+if ($iniziale !== '') {
+    $url .= '&iniziale=' . rawurlencode($iniziale);
+}
+header('Location: ' . $url, true, 303);
 exit;
 ?>
