@@ -37,8 +37,32 @@ Sinx for Association - Gestionale per Associazioni no-profit
 =========================================================================+
 */
 
-include('./top.inc');
-echo("<h2><center>Creo le tabelle</center></h2>");
+?>
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Installazione Sinx 2.0 - Database</title>
+<style>
+*{box-sizing:border-box}body{margin:0;padding:28px 16px;background:#f3f5f8;color:#263445;font-family:Arial,sans-serif}
+.install-wrap{max-width:760px;margin:30px auto}.install-card{background:#fff;border-radius:14px;padding:34px;box-shadow:0 8px 30px rgba(25,45,70,.08)}
+.brand{font-size:28px;font-weight:700;margin-bottom:6px}.muted{color:#657487;line-height:1.55}.steps{display:flex;gap:8px;margin:24px 0}.step{flex:1;border-radius:8px;background:#e8edf3;padding:10px;text-align:center;font-size:13px;color:#5c6877}.step.active{background:#1f669e;color:#fff}
+h1{font-size:25px;margin:25px 0 10px}.log{background:#f7f9fb;border:1px solid #e1e7ee;border-radius:8px;padding:16px;margin:20px 0;line-height:1.65;color:#445366}.log br{display:block;content:"";margin:3px 0}
+label{display:block;font-weight:600;margin:17px 0 7px}input{display:block;width:100%;padding:12px 13px;border:1px solid #cbd4df;border-radius:7px;font-size:16px;background:#fff}
+button{margin-top:22px;padding:13px 22px;border:0;border-radius:7px;background:#1769aa;color:#fff;font-size:16px;font-weight:600;cursor:pointer}button:hover{background:#125687}
+.notice{background:#eef6fc;border-left:4px solid #2581bd;padding:13px 16px;border-radius:5px;line-height:1.5;margin:20px 0}.foot{margin-top:24px;color:#718096;font-size:12px;line-height:1.5}
+@media(max-width:560px){.install-card{padding:22px}.step{font-size:11px;padding:8px 3px}}
+</style>
+</head>
+<body>
+<main class="install-wrap"><section class="install-card">
+<div class="brand">Sinx 2.0</div>
+<p class="muted">Procedura guidata di installazione</p>
+<div class="steps"><div class="step">1. Database</div><div class="step active">2. Preparazione</div><div class="step">3. Amministratore</div><div class="step">4. Logo</div><div class="step">5. Associazione</div></div>
+<h1>Preparazione del database</h1>
+<p class="muted">Sinx sta predisponendo le tabelle e caricando i dati iniziali necessari al funzionamento del gestionale.</p>
+<div class="log">
 
 	include ('../dati_db.inc');
 	$link = new mysqli("$host", "$username", "$password","$db_name") or die(mysqli_connect_error("Non posso connettermi al database"));
@@ -8912,42 +8936,20 @@ echo "Impossibile popolare la tabella <b>Blocco Note</b> oppure la tabella gi&ag
 echo "Casella Blocco Note Pronta<br>"; 
 } 
 
-//CREO IL PRIMO UTENTE
 ?>
-<center><h2>Inserimento nuovo utente</h2></center>
-<center><small>Qui viene inserito il primo utente amministratore di Sinx</small></center>
-<br>
-<center><progress value="25" max="100">25%</progress></center>
-      <form action='./conf_dati_utente_install.php' method='POST'>\n        <input type='hidden' name='csrf_token' value='<?php echo htmlspecialchars($_SESSION['sinx_install_csrf'] ?? '', ENT_QUOTES, 'UTF-8'); ?>'>
-        <table align='center' border='0' width='60%'>
-          <tbody>
-            <tr>
-              <td width='150'><font color="red">Nome Utente *:</td>
-              <td><input value="Nome Utente" name='nomeut' size='30' type='text' required></td>
-            </tr>
-            <tr>
-              <td width='150'><font color="red">Livello *:</td>
-              <td><select name="livello" >
-   <option value="admin" selected="selected" required>Amministratore</option>
- <!--  <option value="admin">Amministratore</option>
- <option value="limitato">Utilizzatore limitato</option> -->
-</select>
-	</td>
-       </tr>
-            <tr>
-              <td width='150'><font color="red">Password *:</td>
-              <td><input type='password' name='passwd' size='30' required></td>
-            </tr>
-            <tr>
-              <td colspan='2' align='center'>
-              <input value='invia' type='submit'></td>
-            </tr>
-          </tbody>
-        </table>
-<?php
-mysqli_close($link);
-
-include('./botton.inc');
-
-
-?>
+</div>
+<div class="notice"><strong>Database predisposto.</strong><br>Le tabelle e i dati iniziali sono stati caricati. Ora crea il primo account, che avrà automaticamente i privilegi di amministratore.</div>
+<h1>Creazione amministratore</h1>
+<p class="muted">Scegli il nome utente e una password sicura. Queste credenziali saranno utilizzate per accedere a Sinx.</p>
+<form action="./conf_dati_utente_install.php" method="post" autocomplete="off">
+<input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['sinx_install_csrf'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
+<label for="nomeut">Nome utente *</label>
+<input id="nomeut" name="nomeut" type="text" maxlength="25" required autocomplete="username" placeholder="Scegli un nome utente">
+<label for="passwd">Password *</label>
+<input id="passwd" name="passwd" type="password" minlength="8" required autocomplete="new-password" placeholder="Almeno 8 caratteri">
+<button type="submit">Crea amministratore e continua</button>
+</form>
+<p class="foot">Il primo account viene creato obbligatoriamente con il ruolo di amministratore. Conserva le credenziali in un luogo sicuro.</p>
+</section></main>
+</body>
+</html>
