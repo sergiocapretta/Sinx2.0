@@ -63,7 +63,7 @@ mysqli_close($link);
 
 // Registro il completamento solo dopo il salvataggio dei dati dell'associazione.
 $lock_file = __DIR__ . '/installazione_completata.lock';
-$lock_data = "Sinx installato il " . date('c') . "\\n";
+$lock_data = "Sinx installato il " . date('c') . "\n";
 if (file_put_contents($lock_file, $lock_data, LOCK_EX) === false) {
     echo "<h3>Dati salvati, ma non è stato possibile creare il blocco di sicurezza dell'installer.</h3>";
     echo "<p>Verifica i permessi della cartella Install e crea il file installazione_completata.lock prima di rendere pubblico il gestionale.</p>";
