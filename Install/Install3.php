@@ -6,6 +6,10 @@
 =========================================================================+*/
 include('./top.inc');
 ?>
+<style>
+.steps{display:flex;gap:7px;margin:22px auto;max-width:900px;padding:0 12px}.step{flex:1;border-radius:7px;background:#e8edf3;padding:10px 5px;text-align:center;font:13px Arial,sans-serif;color:#5c6877}.step.active{background:#1f669e;color:#fff}
+@media(max-width:650px){.steps{gap:3px;padding:0 5px}.step{font-size:10px;padding:8px 2px}}
+</style>
 
 <div class="steps"><div class="step">1. Database</div><div class="step">2. Preparazione</div><div class="step">3. Amministratore</div><div class="step">4. Logo</div><div class="step active">5. Associazione</div></div>\n<center><h2>Dati dell'Associazione</h2></center>
 <center><small>Inserisci tutti i dati dell'Associazione</small></center>
