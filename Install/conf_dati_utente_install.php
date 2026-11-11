@@ -11,6 +11,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+if (empty($_SESSION['sinx_install_csrf']) || !isset($_POST['csrf_token']) || !hash_equals($_SESSION['sinx_install_csrf'], $_POST['csrf_token'])) {
+    exit('Sessione non valida o scaduta. Riapri la procedura di installazione.');
+}
+
 $nome = trim($_POST['nomeut'] ?? '');
 $password_admin = (string)($_POST['passwd'] ?? '');
 $livello = 'admin';
