@@ -63,7 +63,7 @@ button{margin-top:22px;padding:13px 22px;border:0;border-radius:7px;background:#
 <h1>Preparazione del database</h1>
 <p class="muted">Sinx sta predisponendo le tabelle e caricando i dati iniziali necessari al funzionamento del gestionale.</p>
 <div class="log">
-
+<?php
 	include ('../dati_db.inc');
 	$link = new mysqli("$host", "$username", "$password","$db_name") or die(mysqli_connect_error("Non posso connettermi al database"));
 	echo "Mi connetto al database...Connessione riuscita.<br><br>";
