@@ -11,7 +11,8 @@ include('./top.inc');
 @media(max-width:650px){.steps{gap:3px;padding:0 5px}.step{font-size:10px;padding:8px 2px}}
 </style>
 
-<div class="steps"><div class="step">1. Database</div><div class="step">2. Preparazione</div><div class="step">3. Amministratore</div><div class="step">4. Logo</div><div class="step active">5. Associazione</div></div>\n<center><h2>Dati dell'Associazione</h2></center>
+<div class="steps"><div class="step">1. Database</div><div class="step">2. Preparazione</div><div class="step">3. Amministratore</div><div class="step">4. Logo</div><div class="step active">5. Associazione</div></div>
+<center><h2>Dati dell'Associazione</h2></center>
 <center><small>Inserisci tutti i dati dell'Associazione</small></center>
 <br>
 <center><progress value="75" max="100">75%</progress></center>
