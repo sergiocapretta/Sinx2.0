@@ -1,5 +1,6 @@
 <?php
-session_start();\nif (file_exists(__DIR__ . '/installazione_completata.lock')) { http_response_code(403); exit('Installazione già completata.'); }
+session_start();
+if (file_exists(__DIR__ . '/installazione_completata.lock')) { http_response_code(403); exit('Installazione già completata.'); }
 
 function errore_installazione($messaggio) {
     http_response_code(400);
