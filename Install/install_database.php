@@ -1,4 +1,6 @@
 <?php
+session_start();
+if (file_exists(__DIR__ . '/installazione_completata.lock')) { http_response_code(403); exit('Installazione già completata.'); }
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 /*======================================================================+
