@@ -8916,7 +8916,7 @@ echo "Casella Blocco Note Pronta<br>";
 <center><small>Qui viene inserito il primo utente amministratore di Sinx</small></center>
 <br>
 <center><progress value="25" max="100">25%</progress></center>
-      <form action='./conf_dati_utente_install.php' method='POST'>
+      <form action='./conf_dati_utente_install.php' method='POST'>\n        <input type='hidden' name='csrf_token' value='<?php echo htmlspecialchars($_SESSION['sinx_install_csrf'] ?? '', ENT_QUOTES, 'UTF-8'); ?>'>
         <table align='center' border='0' width='60%'>
           <tbody>
             <tr>
