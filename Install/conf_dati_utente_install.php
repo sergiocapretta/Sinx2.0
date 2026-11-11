@@ -12,16 +12,16 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 $nome = trim($_POST['nomeut'] ?? '');
-$password = (string)($_POST['passwd'] ?? '');
+$password_admin = (string)($_POST['passwd'] ?? '');
 $livello = 'admin';
 
-if ($nome === '' || $password === '') {
+if ($nome === '' || $password_admin === '') {
     exit('Nome utente e password sono obbligatori. <a href="./install_database.php">Torna indietro</a>');
 }
 if (strlen($nome) > 25) {
     exit('Il nome utente non può superare 25 caratteri.');
 }
-if (strlen($password) < 8) {
+if (strlen($password_admin) < 8) {
     exit('La password deve contenere almeno 8 caratteri. <a href="./install_database.php">Torna indietro</a>');
 }
 
@@ -38,7 +38,7 @@ if (!$stmt) {
     $link->close();
     exit('Impossibile preparare la creazione dell’utente amministratore: ' . $errore);
 }
-$stmt->bind_param('sss', $nome, $livello, $password);
+$stmt->bind_param('sss', $nome, $livello, $password_admin);
 if (!$stmt->execute()) {
     $errore = htmlspecialchars($stmt->error, ENT_QUOTES, 'UTF-8');
     $stmt->close();
