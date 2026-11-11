@@ -67,9 +67,18 @@ $testo = $testo."\n\rAltre info: ".$browser."<br>";
 $testo = $testo."\n\rUtente: ".$nutente."<br>";
 $testo = $testo."\n\rLivello Utente: ".$user;
 
-$var=fopen("./log/logSinx.txt","a");
-fwrite($var,$testo);
-fclose($var);
+// Cartella dei log: su Linux il nome distingue maiuscole e minuscole.
+$cartella_log = __DIR__ . "/log";
+if (!is_dir($cartella_log)) {
+    @mkdir($cartella_log, 0755, true);
+}
+$percorso_log = $cartella_log . "/logSinx.txt";
+$var = @fopen($percorso_log, "a");
+if ($var !== false) {
+    fwrite($var, $testo);
+    fclose($var);
+}
+// Un problema nella scrittura del log non deve bloccare l'accesso a Sinx.
 
 include ('./dati_db.inc');
 $connect = mysqli_connect("$host", "$username", "$password", "$db_name") or die("cannot connect DB");
