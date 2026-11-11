@@ -35,6 +35,10 @@ Sinx for Association - Gestionale per Associazioni no-profit
 include('./top.inc');
 
 ?>
+<style>
+.steps{display:flex;gap:7px;margin:22px auto;max-width:900px;padding:0 12px}.step{flex:1;border-radius:7px;background:#e8edf3;padding:10px 5px;text-align:center;font:13px Arial,sans-serif;color:#5c6877}.step.active{background:#1f669e;color:#fff}
+@media(max-width:650px){.steps{gap:3px;padding:0 5px}.step{font-size:10px;padding:8px 2px}}
+</style>
       <form action='./conf_immagine_install.php' method='POST' enctype="multipart/form-data">
 <div class="steps"><div class="step">1. Database</div><div class="step">2. Preparazione</div><div class="step">3. Amministratore</div><div class="step active">4. Logo</div><div class="step">5. Associazione</div></div>\n<center><h2>Caricamento Logo Associazione</h2></center>
 <center><small>L'inserimento del logo dell'Associazione serve per predisporre l'intestazione per le stampe</small></center>
