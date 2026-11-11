@@ -40,7 +40,8 @@ include('./top.inc');
 @media(max-width:650px){.steps{gap:3px;padding:0 5px}.step{font-size:10px;padding:8px 2px}}
 </style>
       <form action='./conf_immagine_install.php' method='POST' enctype="multipart/form-data">
-<div class="steps"><div class="step">1. Database</div><div class="step">2. Preparazione</div><div class="step">3. Amministratore</div><div class="step active">4. Logo</div><div class="step">5. Associazione</div></div>\n<center><h2>Caricamento Logo Associazione</h2></center>
+<div class="steps"><div class="step">1. Database</div><div class="step">2. Preparazione</div><div class="step">3. Amministratore</div><div class="step active">4. Logo</div><div class="step">5. Associazione</div></div>
+<center><h2>Caricamento Logo Associazione</h2></center>
 <center><small>L'inserimento del logo dell'Associazione serve per predisporre l'intestazione per le stampe</small></center>
 <br>
 <center><progress value="50" max="100">50%</progress></center>
