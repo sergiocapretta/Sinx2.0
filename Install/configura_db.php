@@ -77,6 +77,6 @@ if (file_put_contents($config_file, $contenuto, LOCK_EX) === false) {
     errore_installazione('Non è stato possibile scrivere dati_db.inc. Verifica i permessi del file.');
 }
 
-unset($_SESSION['sinx_install_csrf']);
+// Il token CSRF resta attivo per le successive fasi dell'installazione.
 header('Location: ./index.php?db_configurato=1');
 exit;
