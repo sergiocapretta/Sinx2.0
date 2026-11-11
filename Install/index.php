@@ -40,7 +40,7 @@ button{margin-top:24px;padding:13px 22px;border:0;border-radius:7px;background:#
 <section class="install-card">
 <div class="brand">Sinx 2.0</div>
 <p class="muted">Procedura guidata di installazione</p>
-<div class="steps"><div class="step active">1. Database</div><div class="step">2. Amministratore</div><div class="step">3. Associazione</div></div>
+<div class="steps"><div class="step active">1. Database</div><div class="step">2. Preparazione</div><div class="step">3. Amministratore</div><div class="step">4. Logo</div><div class="step">5. Associazione</div></div>
 <h1>Collegamento al database</h1>
 <p class="muted">Inserisci i dati del database MySQL che hai già creato dal pannello del tuo hosting. Sinx non crea un nuovo database: verifica la connessione e configura automaticamente il file necessario.</p>
 <div class="notice"><strong>Prima di iniziare</strong><br>Assicurati che il database esista e che l'utente indicato abbia i privilegi per creare e modificare tabelle.</div>
