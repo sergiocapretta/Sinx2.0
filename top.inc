@@ -69,6 +69,9 @@ $testo = $testo."\n\rLivello Utente: ".$user;
 
 // Cartella dei log: su Linux il nome distingue maiuscole e minuscole.
 $cartella_log = __DIR__ . "/log";
+if (!is_dir($cartella_log) && is_dir(__DIR__ . "/Log")) {
+    $cartella_log = __DIR__ . "/Log";
+}
 if (!is_dir($cartella_log)) {
     @mkdir($cartella_log, 0755, true);
 }
