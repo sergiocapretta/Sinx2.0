@@ -1,0 +1,10 @@
+; Esempio di configurazione PHP per la sola cartella demo.
+; Copiare questo file come .user.ini e sostituire il percorso qui sotto
+; con il percorso ASSOLUTO reale di demo_guard.php sullo spazio Aruba.
+;
+; Esempio (NON usare letteralmente):
+; auto_prepend_file = /percorso/assoluto/del/sito/demo_guard.php
+;
+; La protezione è obbligatoria: demo_login.php rifiuta l'accesso se il guard
+; non risulta caricato. Dopo la modifica attendere il refresh della cache
+; .user.ini di PHP e verificare il funzionamento prima di pubblicare la demo.
