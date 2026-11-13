@@ -182,6 +182,7 @@ if (!empty($weather["current"])) {
  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Sinx</title>
 <link rel="stylesheet" type="text/css" href="style.css">
+<link rel="stylesheet" type="text/css" href="./plugins/plugins.css">
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script type='text/javascript' src='./menu_assets/menu_jquery.js'></script>
