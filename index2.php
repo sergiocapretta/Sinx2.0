@@ -46,6 +46,10 @@ include($linguaindex2);
 if ($user) {
 include('./top.inc');
 
+$pluginNotice = isset($_GET['plugin_notice']) ? (string) $_GET['plugin_notice'] : '';
+if ($pluginNotice === 'installed') {
+    echo '<div class="plugin-notice" role="status">Plugin attivato correttamente. Lo trovi nel menu laterale, nella sezione <strong>Plugin</strong>.</div>';
+}
 
 	include ('./dati_db.inc');
 	$link=mysqli_connect("$host", "$username", "$password","$db_name")or die(mysqli_connect_error("Non posso connettermi al database"));
