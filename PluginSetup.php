@@ -30,7 +30,6 @@ $currentUrl = $installed ? $installed['url'] : '';
 $currentRoles = $installed ? array_filter(array_map('trim', explode(',', $installed['visible_roles']))) : sinxPluginsAllowedRoles();
 $csrf = sinxPluginsCsrfToken();
 ?>
-<link rel="stylesheet" href="./plugins/plugins.css">
 <main class="plugins-page">
   <section class="plugin-form-card">
     <h1><?php echo $installed ? 'Configura' : 'Installa'; ?> <?php echo htmlspecialchars($definition['name'], ENT_QUOTES, 'UTF-8'); ?></h1>
