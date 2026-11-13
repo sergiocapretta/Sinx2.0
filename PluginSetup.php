@@ -36,6 +36,10 @@ $csrf = sinxPluginsCsrfToken();
     <h1><?php echo $installed ? 'Configura' : 'Installa'; ?> <?php echo htmlspecialchars($definition['name'], ENT_QUOTES, 'UTF-8'); ?></h1>
     <p><?php echo htmlspecialchars($definition['description'], ENT_QUOTES, 'UTF-8'); ?></p>
 
+    <?php if (isset($_GET['error'])): ?>
+      <div class="plugin-error">L'indirizzo inserito non è valido oppure non è stato possibile salvare la configurazione. Controllare che l'URL inizi con http:// o https:// e riprovare.</div>
+    <?php endif; ?>
+
     <div class="plugin-warning">
       Questa procedura collega Sinx a un'applicazione esterna già installata sul server. Non copia né installa i file di Reunion e non crea il suo database: registra l'indirizzo e aggiunge la voce al menu di Sinx.
     </div>
