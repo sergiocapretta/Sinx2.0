@@ -63,7 +63,11 @@ if ($action === 'save') {
 
     $ok = sinxPluginsSave($db, $plugin);
     mysqli_close($db);
-    header('Location: ./Plugin.php?notice=' . ($ok ? 'installed' : 'error'));
+    if ($ok) {
+        header('Location: ./index2.php?plugin_notice=installed');
+    } else {
+        header('Location: ./Plugin.php?notice=error');
+    }
     exit;
 }
 
