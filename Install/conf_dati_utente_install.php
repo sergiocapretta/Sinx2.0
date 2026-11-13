@@ -1,77 +1,57 @@
 <?php
-/*======================================================================+
- File name   : conf_dati_utente_install.php
- Begin       : 2013-01-09
- Last Update : 2013-01-13
+session_start();
 
- Description : Confirm step 1 to install software
+if (file_exists(__DIR__ . '/installazione_completata.lock')) {
+    http_response_code(403);
+    exit('Installazione già completata.');
+}
 
- Author: Sergio Capretta
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    header('Location: ./index.php');
+    exit;
+}
 
- (c) Copyright:
-               Sergio Capretta
-             
-               ITALY
-               www.sinx.it
-               info@sinx.it
+if (empty($_SESSION['sinx_install_csrf']) || !isset($_POST['csrf_token']) || !hash_equals($_SESSION['sinx_install_csrf'], $_POST['csrf_token'])) {
+    exit('Sessione non valida o scaduta. Riapri la procedura di installazione.');
+}
 
-Sinx for Association - Gestionale per Associazioni no-profit
-    Copyright (C) 2011 by Sergio Capretta
+$nome = trim($_POST['nomeut'] ?? '');
+$password_admin = (string)($_POST['passwd'] ?? '');
+$livello = 'admin';
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+if ($nome === '' || $password_admin === '') {
+    exit('Nome utente e password sono obbligatori. <a href="./install_database.php">Torna indietro</a>');
+}
+if (strlen($nome) > 25) {
+    exit('Il nome utente non può superare 25 caratteri.');
+}
+if (strlen($password_admin) < 8) {
+    exit('La password deve contenere almeno 8 caratteri. <a href="./install_database.php">Torna indietro</a>');
+}
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+require_once('../dati_db.inc');
+mysqli_report(MYSQLI_REPORT_OFF);
+$link = @new mysqli($host, $username, $password, $db_name);
+if ($link->connect_errno) {
+    exit('Connessione al database non riuscita. Verifica i dati di configurazione.');
+}
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-=========================================================================+
-*/
+$stmt = $link->prepare("INSERT INTO utenti (utente, nome, pswd) VALUES (?, ?, MD5(?))");
+if (!$stmt) {
+    $errore = htmlspecialchars($link->error, ENT_QUOTES, 'UTF-8');
+    $link->close();
+    exit('Impossibile preparare la creazione dell’utente amministratore: ' . $errore);
+}
+$stmt->bind_param('sss', $nome, $livello, $password_admin);
+if (!$stmt->execute()) {
+    $errore = htmlspecialchars($stmt->error, ENT_QUOTES, 'UTF-8');
+    $stmt->close();
+    $link->close();
+    exit('Creazione dell’amministratore non riuscita: ' . $errore);
+}
+$stmt->close();
+$link->close();
 
-	$nnome = $_POST['nomeut'];
-	$nlivello = $_POST['livello'];
-	$passwd = $_POST['passwd'];
-
-//escape html
-$nome = htmlspecialchars($nnome, ENT_NOQUOTES, "UTF-8");
-$livello = htmlspecialchars($nlivello, ENT_NOQUOTES, "UTF-8");
-
-
-//Funzione per il redirect
-function redirect($url,$tempo = FALSE ){
- if(!headers_sent() && $tempo == FALSE ){
-  header('Location:' . $url);
- }elseif(!headers_sent() && $tempo != FALSE ){
-  header('Refresh:' . $tempo . ';' . $url);
- }else{
-  if($tempo == FALSE ){
-    $tempo = 0;
-  }
-  echo "<meta http-equiv=\"refresh\" content=\"" . $tempo . ";" . $url . "\">";
-  }
-} 
-
-//Controllo campi compilati
-	include ('../dati_db.inc');
-	$link=mysqli_connect("$host", "$username", "$password","$db_name")or die(mysqli_connect_error("Non posso connettermi al database"));
-
-$tb_utenti = ('utenti(utente, nome, pswd)');
-	if ($nome){ 
-
-		$sql="insert into $tb_utenti values('$nome', '$livello', MD5('$passwd'))"; //inserisco i valori nel database
-		$result=mysqli_query($link, $sql);
-		echo("Registrazione effettuata, redirect in corso..attendere...");
-		redirect('./Install2.php' ,2); //Vado alla pagina di conferma
-	}else{ 
-		header('location: ../errore.html'); //Vado alla pagina di errore
-		}
-mysqli_close($link);
-
-
-
+header('Location: ./Install2.php');
+exit;
 ?>

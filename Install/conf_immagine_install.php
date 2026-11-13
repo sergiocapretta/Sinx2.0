@@ -27,7 +27,10 @@ function redirect(string $url, int $tempo = 0): void {
 $upload_dir = "../Immagini";
 $input_name = "immagine";
 
-if (!isset($_FILES[$input_name]) || $_FILES[$input_name]['error'] !== UPLOAD_ERR_OK) {
+if (!isset($_FILES[$input_name]) || $_FILES[$input_name]['error'] === UPLOAD_ERR_NO_FILE) {
+    redirect('./Install3.php');
+}
+if ($_FILES[$input_name]['error'] !== UPLOAD_ERR_OK) {
     echo "Errore durante l'upload del file.";
     redirect('./Install2.php', 2);
 }
@@ -40,7 +43,7 @@ $target_path = "{$upload_dir}/{$file_name}";
 $finfo = finfo_open(FILEINFO_MIME_TYPE);
 $mime = finfo_file($finfo, $tmp_file);
 finfo_close($finfo);
-$allowed = ['image/png', 'image/jpeg', 'image/gif'];
+$allowed = ['image/png'];
 
 if (!in_array($mime, $allowed, true)) {
     echo "Tipo di file non valido ({$mime}). Sono accettate solo immagini PNG, JPG, GIF.";

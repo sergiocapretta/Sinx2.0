@@ -67,9 +67,21 @@ $testo = $testo."\n\rAltre info: ".$browser."<br>";
 $testo = $testo."\n\rUtente: ".$nutente."<br>";
 $testo = $testo."\n\rLivello Utente: ".$user;
 
-$var=fopen("./log/logSinx.txt","a");
-fwrite($var,$testo);
-fclose($var);
+// Cartella dei log: su Linux il nome distingue maiuscole e minuscole.
+$cartella_log = __DIR__ . "/log";
+if (!is_dir($cartella_log) && is_dir(__DIR__ . "/Log")) {
+    $cartella_log = __DIR__ . "/Log";
+}
+if (!is_dir($cartella_log)) {
+    @mkdir($cartella_log, 0755, true);
+}
+$percorso_log = $cartella_log . "/logSinx.txt";
+$var = @fopen($percorso_log, "a");
+if ($var !== false) {
+    fwrite($var, $testo);
+    fclose($var);
+}
+// Un problema nella scrittura del log non deve bloccare l'accesso a Sinx.
 
 include ('./dati_db.inc');
 $connect = mysqli_connect("$host", "$username", "$password", "$db_name") or die("cannot connect DB");
@@ -78,6 +90,11 @@ $Query_nome = "SELECT * FROM tb_anagrafe_associaz";
 $rs=mysqli_query($connect, $Query_nome)
 or die("<b>Errore:</b> Impossibile eseguire la query della Combo");
 $row=mysqli_fetch_array($rs);
+
+// Sistema plugin: il menu mostra soltanto le applicazioni registrate e abilitate.
+require_once __DIR__ . '/plugins/functions.php';
+$sinxMenuPlugins = sinxPluginsGetForMenu($connect, $user);
+
 
 // --- METEO BASATO SULL'INDIRIZZO DELL'ASSOCIAZIONE ---
 // (NO API KEY, usa Nominatim + Open-Meteo)
@@ -165,6 +182,7 @@ if (!empty($weather["current"])) {
  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Sinx</title>
 <link rel="stylesheet" type="text/css" href="style.css">
+<link rel="stylesheet" type="text/css" href="./plugins/plugins.css">
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script type='text/javascript' src='./menu_assets/menu_jquery.js'></script>
@@ -254,6 +272,21 @@ if (!empty($weather["current"])) {
           <li><a href='./nclasse.php'><i class="material-icons">create</i><span><?php echo $Lfunzioniassociati; ?></span></a></li>
           <li><a href='./nmateria.php'><i class="material-icons">low_priority</i><span><?php echo $Ltipoassociati; ?></span></a></li>
           <li><a href='./Licenza.php'><i class="material-icons">reorder</i><span><?php echo $Llicenza; ?></span></a></li>
+        </ul>
+      </li>
+
+      <li class='has-sub'>
+        <a href='#'><i class="material-icons">extension</i><span>Plugin</span></a>
+        <ul>
+          <li><a href='./Plugin.php'><i class="material-icons">apps</i><span>Plugin disponibili</span></a></li>
+          <?php foreach ($sinxMenuPlugins as $sinxPlugin): ?>
+            <li>
+              <a target="_blank" rel="noopener noreferrer" href="<?php echo htmlspecialchars($sinxPlugin['url'], ENT_QUOTES, 'UTF-8'); ?>">
+                <i class="material-icons"><?php echo htmlspecialchars($sinxPlugin['menu_icon'], ENT_QUOTES, 'UTF-8'); ?></i>
+                <span><?php echo htmlspecialchars($sinxPlugin['menu_label'], ENT_QUOTES, 'UTF-8'); ?></span>
+              </a>
+            </li>
+          <?php endforeach; ?>
         </ul>
       </li>
 
