@@ -6,7 +6,6 @@ if (empty($_SESSION['utente'])) {
 }
 
 include_once __DIR__ . '/plugins/functions.php';
-include_once __DIR__ . '/plugins/catalog.php';
 $catalog = include __DIR__ . '/plugins/catalog.php';
 
 include __DIR__ . '/top.inc';
