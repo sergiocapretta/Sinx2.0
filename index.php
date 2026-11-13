@@ -1,4 +1,3 @@
-<?php require_once __DIR__ . '/demo_config.inc'; ?>
 
 <html>
 <!--======================================================================+
@@ -213,7 +212,6 @@ Sinx for Association - Gestionale per Associazioni no-profit
         <small>Versione 2.0</small><br>
 
         <small>Sinx for Association © 2011–2025 by Sergio Capretta</small>
-        <?php if (!empty($sinx_demo_enabled)) { ?><br><br><a href="./demo_login.php" style="display:inline-block;padding:10px 16px;background:#233592;color:#fff;text-decoration:none;border-radius:8px;font-weight:bold;">Entra nella demo</a><?php } ?>
       </div>
     </div>
   </form>
