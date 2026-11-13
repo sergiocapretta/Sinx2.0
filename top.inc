@@ -276,7 +276,7 @@ if (!empty($weather["current"])) {
       </li>
 
       <li class='has-sub'>
-        <a href='./Plugin.php'><i class="material-icons">extension</i><span>Plugin</span></a>
+        <a href='#'><i class="material-icons">extension</i><span>Plugin</span></a>
         <ul>
           <li><a href='./Plugin.php'><i class="material-icons">apps</i><span>Plugin disponibili</span></a></li>
           <?php foreach ($sinxMenuPlugins as $sinxPlugin): ?>
