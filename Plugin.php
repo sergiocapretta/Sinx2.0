@@ -20,7 +20,6 @@ $installed = sinxPluginsGetAll($connect);
 $isAdmin = sinxPluginsIsAdmin();
 $notice = isset($_GET['notice']) ? (string) $_GET['notice'] : '';
 ?>
-<link rel="stylesheet" href="./plugins/plugins.css">
 <main class="plugins-page">
   <div class="plugins-heading">
     <h1>Plugin disponibili</h1>
