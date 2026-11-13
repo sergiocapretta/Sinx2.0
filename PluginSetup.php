@@ -36,7 +36,7 @@ $csrf = sinxPluginsCsrfToken();
     <p><?php echo htmlspecialchars($definition['description'], ENT_QUOTES, 'UTF-8'); ?></p>
 
     <?php if (isset($_GET['error'])): ?>
-      <div class="plugin-error">L'indirizzo inserito non è valido oppure non è stato possibile salvare la configurazione. Controllare che l'URL inizi con http:// o https:// e riprovare.</div>
+      <div class="plugin-error">L'indirizzo inserito non è valido, non è stato possibile salvare la configurazione oppure non è stato selezionato almeno un profilo. Verificare i dati e riprovare.</div>
     <?php endif; ?>
 
     <div class="plugin-warning">
