@@ -111,8 +111,10 @@ if (file_exists($logfile)) {
         }
     }
 
-    // Salva i blocchi rimanenti nel file
-    file_put_contents($logfile, implode("\n", $retained) . "\n");
+    // In demo mostro il log filtrato senza modificare il file originale.
+    if (!defined('SINX_DEMO_ENABLED') || !SINX_DEMO_ENABLED) {
+        file_put_contents($logfile, implode("\n", $retained) . "\n");
+    }
 
     $logContent = implode("\n", $retained);
 
@@ -127,7 +129,9 @@ if (file_exists($logfile)) {
     <p class="card-subtitle"><?php echo $Lcanclog; ?> (i log più vecchi di 30 giorni vengono cancellati automaticamente)</p>
 
     <div style="text-align:right;">
+      <?php if (!defined('SINX_DEMO_ENABLED') || !SINX_DEMO_ENABLED) { ?>
       <a href="./CancLog.php" class="link-btn">🗑️ Cancella tutti i log</a>
+      <?php } ?>
     </div>
 
     <hr class="divider">
