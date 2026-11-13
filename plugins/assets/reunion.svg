@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Reunion">
+  <rect width="128" height="128" rx="22" fill="#233592"/>
+  <rect x="25" y="31" width="78" height="72" rx="9" fill="#ffffff"/>
+  <path d="M25 48h78" stroke="#778dff" stroke-width="8"/>
+  <path d="M44 22v19M84 22v19" stroke="#ffffff" stroke-width="8" stroke-linecap="round"/>
+  <rect x="39" y="61" width="13" height="12" rx="3" fill="#778dff"/>
+  <rect x="58" y="61" width="13" height="12" rx="3" fill="#233592"/>
+  <rect x="77" y="61" width="13" height="12" rx="3" fill="#778dff"/>
+  <rect x="39" y="81" width="13" height="12" rx="3" fill="#233592"/>
+  <rect x="58" y="81" width="13" height="12" rx="3" fill="#778dff"/>
+  <rect x="77" y="81" width="13" height="12" rx="3" fill="#233592"/>
+</svg>
