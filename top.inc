@@ -50,8 +50,7 @@ $paginamenu = "menu.inc";
 $linguamenu = ($langmenu.$paginamenu);
 include($linguamenu);
 
-//LOG DI SINX: nella demo non registro gli accessi dei visitatori.
-if (!defined('SINX_DEMO_ENABLED') || !SINX_DEMO_ENABLED) {
+//LOG DI SINX
 if (isset($_SERVER['HTTP_REFERER'])){
 $provenienza = $_SERVER['HTTP_REFERER'];
 } else {
@@ -83,10 +82,6 @@ if ($var !== false) {
     fclose($var);
 }
 // Un problema nella scrittura del log non deve bloccare l'accesso a Sinx.
-}
-
-// La registrazione dei plugin resta attiva anche nella normale modalità demo.
-// In demo_guard.php vengono comunque bloccate le operazioni non consentite.
 
 include ('./dati_db.inc');
 $connect = mysqli_connect("$host", "$username", "$password", "$db_name") or die("cannot connect DB");
@@ -197,11 +192,6 @@ if (!empty($weather["current"])) {
 
 </head>
 <body>
-<?php if (defined('SINX_DEMO_ENABLED') && SINX_DEMO_ENABLED) { ?>
-<div style="background:#fff3cd;color:#664d03;padding:10px 16px;text-align:center;font-weight:bold;">
-  MODALITÀ DEMO: puoi esplorare Sinx e compilare i moduli, ma nessuna modifica viene salvata.
-</div>
-<?php } ?>
 <!-- HEADER -->
 <header class="header-container">
   <div class="header-left">
