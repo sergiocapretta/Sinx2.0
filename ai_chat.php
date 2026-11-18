@@ -63,7 +63,7 @@ foreach ($allowedTables as $table) {
 if (!$schema) sinx_ai_json_error(503, 'Non trovo tabelle consultabili per le categorie abilitate.');
 
 try {
-    $prompt = "Sei l'assistente informativo di Sinx. Genera una sola query MySQL SELECT di sola lettura che risponda alla domanda. Non generare istruzioni o commenti: restituisci solo SQL. Usa esclusivamente le tabelle e colonne elencate. Non usare SELECT *, subquery, UNION, commenti, funzioni diverse da COUNT, SUM, AVG, MIN, MAX, ROUND, COALESCE, IFNULL, YEAR, MONTH, DAY, DATE, DATEDIFF. Non selezionare né filtrare dati identificativi. Metti LIMIT 100. Schema consultabile: " . json_encode($schema) . "\nDomanda: " . $question;
+    $prompt = "Sei l'assistente informativo di Sinx. Genera una sola query MySQL SELECT di sola lettura che risponda alla domanda. Non generare istruzioni o commenti: restituisci esclusivamente SQL, senza blocchi Markdown e senza punto e virgola finale. Usa esclusivamente le tabelle e colonne elencate. Per domande sul numero degli associati/iscritti usa COUNT(*) sulla tabella tb_anagrafe. Non usare SELECT *, subquery, UNION, commenti, funzioni diverse da COUNT, SUM, AVG, MIN, MAX, ROUND, COALESCE, IFNULL, YEAR, MONTH, DAY, DATE, DATEDIFF. Non selezionare né filtrare dati identificativi. Metti LIMIT 100. Schema consultabile: " . json_encode($schema) . "\nDomanda: " . $question;
     $sql = sinx_ai_call($settings, array(array('role' => 'user', 'content' => $prompt)));
     $safeSql = sinx_ai_validate_sql($sql, array_map('strtolower', $allowedTables));
     if ($safeSql === false) sinx_ai_json_error(422, 'La richiesta richiede dati o una query non consentiti. Riformula la domanda in modo più generale.');
