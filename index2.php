@@ -37,6 +37,10 @@ Sinx for Association - Gestionale per Associazioni no-profit
 
 
 $user = $_SESSION['utente'];
+$isAiAdmin = ($user === 'admin');
+$aiButtonDisabled = $isAiAdmin ? '' : ' disabled aria-disabled="true"';
+$aiCanAsk = $isAiAdmin ? 'true' : 'false';
+$aiAccessMessage = $isAiAdmin ? 'Puoi interrogare i dati applicativi del database in sola lettura.' : 'L’assistente AI è disponibile esclusivamente per l’amministratore.';
 $nutente = $_SESSION['nome'];
 $langu = $_SESSION['lingua'];
 $paginaindex2 = "index2.inc";
@@ -135,17 +139,18 @@ echo <<<HTML
 
 <section class="content-section"><div class="card">
   <h3 class="card-title">Assistente AI</h3>
-  <p class="card-subtitle">Fai una domanda sui dati autorizzati dall’amministratore.</p>
-  <form id="sinx-ai-form">
+  <p class="card-subtitle">$aiAccessMessage</p>
+  <form id="sinx-ai-form" class="sinx-ai-form">
     <label for="sinx-ai-question">La tua domanda</label>
-    <input id="sinx-ai-question" name="question" maxlength="1000" required>
-    <button class="btn-edit" type="submit">Chiedi</button>
+    <textarea id="sinx-ai-question" name="question" rows="4" maxlength="1000" placeholder="Scrivi qui la tua domanda..." required></textarea>
+    <div class="sinx-ai-actions"><button class="btn-edit" type="submit"$aiButtonDisabled>Chiedi</button></div>
   </form>
-  <div id="sinx-ai-answer" aria-live="polite"></div>
+  <div id="sinx-ai-answer" class="sinx-ai-answer" aria-live="polite"></div>
 </div></section>
 <script>
 document.getElementById('sinx-ai-form').addEventListener('submit', function (event) {
   event.preventDefault();
+  if (!$aiCanAsk) return;
   var output = document.getElementById('sinx-ai-answer');
   output.textContent = 'Sto cercando una risposta…';
   var body = new URLSearchParams();

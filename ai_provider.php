@@ -18,8 +18,10 @@ function sinx_ai_call($settings, $messages) {
     $key = trim(isset($settings['api_key']) ? $settings['api_key'] : '');
     if (!$key || !$model) throw new Exception('Configurazione AI incompleta.');
 
-    if ($provider === 'openai') {
-        $url = 'https://api.openai.com/v1/chat/completions';
+    if ($provider === 'openai' || $provider === 'groq') {
+        // Groq implements the OpenAI-compatible Chat Completions API.
+        // Keep its endpoint fixed rather than accepting a user-supplied URL.
+        $url = $provider === 'groq' ? 'https://api.groq.com/openai/v1/chat/completions' : 'https://api.openai.com/v1/chat/completions';
         $headers = array('Authorization: Bearer ' . $key);
         $body = array('model' => $model, 'messages' => $messages, 'temperature' => 0);
     } elseif ($provider === 'qwen') {
@@ -107,7 +109,7 @@ function sinx_ai_call($settings, $messages) {
         throw new Exception($provider . ' API HTTP ' . $httpStatus . ': ' . $providerError, $httpStatus);
     }
 
-    if ($provider === 'openai' || $provider === 'qwen') $answer = isset($data['choices'][0]['message']['content']) ? $data['choices'][0]['message']['content'] : '';
+    if ($provider === 'openai' || $provider === 'qwen' || $provider === 'groq') $answer = isset($data['choices'][0]['message']['content']) ? $data['choices'][0]['message']['content'] : '';
     elseif ($provider === 'anthropic') $answer = isset($data['content'][0]['text']) ? $data['content'][0]['text'] : '';
     else $answer = isset($data['candidates'][0]['content']['parts'][0]['text']) ? $data['candidates'][0]['content']['parts'][0]['text'] : '';
     if (!$answer) throw new Exception('Il fornitore AI non ha restituito una risposta utilizzabile.');

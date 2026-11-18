@@ -2,50 +2,42 @@
 session_start();
 header('Content-Type: application/json; charset=utf-8');
 if (empty($_SESSION['utente'])) { http_response_code(401); echo json_encode(array('error' => 'Sessione scaduta.')); exit; }
+if ($_SESSION['utente'] !== 'admin') { http_response_code(403); echo json_encode(array('error' => 'Assistente AI disponibile solo per l’amministratore.')); exit; }
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') { http_response_code(405); echo json_encode(array('error' => 'Metodo non consentito.')); exit; }
 require_once __DIR__ . '/ai_provider.php';
 
 function sinx_ai_json_error($code, $message) { http_response_code($code); echo json_encode(array('error' => $message)); exit; }
-function sinx_ai_sensitive_name($name) {
-    return preg_match('/(^|_)(nome|cognome|email|mail|telefono|cellulare|indirizzo|cap|codice_fiscale|codfisc|cf|iban|pswd|password|datan|nascita|pec|privacy)(_|$)/i', $name) === 1;
+function sinx_ai_credential_field($name) {
+    return preg_match('/(^|_)(pswd|password|passwd|pwd|salt|token|secret|api_key|apikey|private_key|access_key|refresh_token|auth_token|authorization|credential)(_|$)/i', $name) === 1;
 }
 function sinx_ai_validate_sql($sql, $allowedTables) {
     $sql = trim($sql);
-    $sql = preg_replace('/^```(?:sql)?\s*|\s*```$/i', '', $sql);
-    if (strlen($sql) > 5000 || strpos($sql, ';') !== false || strpos($sql, '--') !== false || strpos($sql, '/*') !== false || strpos($sql, '#') !== false) return false;
-    if (!preg_match('/^SELECT\b/i', $sql) || preg_match('/\b(UNION|INSERT|UPDATE|DELETE|REPLACE|DROP|ALTER|CREATE|TRUNCATE|GRANT|REVOKE|INTO|OUTFILE|DUMPFILE|PROCEDURE|FOR\s+UPDATE|LOCK|SLEEP|BENCHMARK|LOAD_FILE|INFORMATION_SCHEMA|MYSQL\.)\b/i', $sql)) return false;
+    $sql = preg_replace('/^[\x60]{3}(?:sql)?\s*|\s*[\x60]{3}$/i', '', $sql);
+    $sql = preg_replace('/;\s*$/', '', $sql);
+    if (strlen($sql) > 10000 || strpos($sql, ';') !== false || strpos($sql, '--') !== false || strpos($sql, '/*') !== false || strpos($sql, '*/') !== false || strpos($sql, '#') !== false) return false;
+    if (strpos($sql, '@') !== false || strpos($sql, ':=') !== false) return false;
+    if (!preg_match('/^SELECT\b/i', $sql) || preg_match('/\b(UNION|INSERT|UPDATE|DELETE|REPLACE|DROP|ALTER|CREATE|TRUNCATE|GRANT|REVOKE|INTO|OUTFILE|DUMPFILE|PROCEDURE|ANALYSE|FOR\s+UPDATE|FOR\s+SHARE|LOCK|SLEEP|BENCHMARK|LOAD_FILE|INFORMATION_SCHEMA|PERFORMANCE_SCHEMA|MYSQL\.|SYS\.|STRAIGHT_JOIN)\b/i', $sql)) return false;
     if (preg_match('/\(\s*SELECT\b/i', $sql) || preg_match_all('/\bSELECT\b/i', $sql) !== 1) return false;
-    if (preg_match('/\b([a-z_][a-z0-9_]*)\s*\(/i', $sql, $functions)) {
-        preg_match_all('/\b([a-z_][a-z0-9_]*)\s*\(/i', $sql, $allFunctions);
-        $safe = array('count','sum','avg','min','max','round','coalesce','ifnull','year','month','day','date','datediff');
-        foreach ($allFunctions[1] as $fn) if (!in_array(strtolower($fn), $safe, true)) return false;
-    }
+    preg_match_all('/\b([a-z_][a-z0-9_]*)\s*\(/i', $sql, $allFunctions);
+    $safe = array('count','sum','avg','min','max','round','coalesce','ifnull','nullif','if','year','month','day','date','datediff','timestampdiff','date_format','curdate','current_date','now','concat','concat_ws','lower','upper','trim','ltrim','rtrim','length','char_length','substring','substr','left','right','locate','replace','abs','floor','ceil','cast','convert','group_concat');
+    foreach ($allFunctions[1] as $fn) if (!in_array(strtolower($fn), $safe, true)) return false;
     if (preg_match('/\bSELECT\s+(?:[a-z0-9_]+\.)?\*(?:\s|,|$)/i', $sql)) return false;
-    if (preg_match('/\b([a-z0-9_]+)\b/i', $sql) && preg_match('/\b(?:FROM|JOIN)\s+`?([a-zA-Z0-9_]+)`?/i', $sql) !== 1) return false;
-    preg_match_all('/\b(?:FROM|JOIN)\s+`?([a-zA-Z0-9_]+)`?/i', $sql, $tables);
+    if (preg_match('/\bFROM\s+[\x60]?[a-zA-Z0-9_]+[\x60]?(?:\s+(?:AS\s+)?[a-zA-Z_][a-zA-Z0-9_]*)?\s*,/i', $sql)) return false;
+    preg_match_all('/\b(?:FROM|JOIN)\s+[\x60]?([a-zA-Z0-9_]+)[\x60]?/i', $sql, $tables);
     if (empty($tables[1])) return false;
     foreach ($tables[1] as $table) if (!in_array(strtolower($table), $allowedTables, true)) return false;
-    // Comma joins can introduce tables without a JOIN token; disallow them.
-    if (preg_match('/\bFROM\b([^)]*)/i', $sql, $from) && strpos($from[1], ',') !== false) return false;
-    if (preg_match('/\b(nome|cognome|email|mail|telefono|cellulare|indirizzo|cap|codice_fiscale|codfisc|\bcf\b|iban|pswd|password|datan|nascita|pec|privacy)\b/i', $sql)) return false;
-    if (!preg_match('/\bLIMIT\s+[0-9]+\s*$/i', $sql)) $sql .= ' LIMIT 100';
-    if (preg_match('/\bLIMIT\s+([0-9]+)/i', $sql, $limit) && (int)$limit[1] > 100) return false;
+    if (preg_match('/\b(pswd|password|passwd|pwd|salt|token|secret|api_key|apikey|private_key|access_key|refresh_token|auth_token|authorization|credential)\b/i', $sql)) return false;
+    if (preg_match('/\bLIMIT\b/i', $sql)) {
+        if (!preg_match('/\bLIMIT\s+([0-9]+)\s*$/i', $sql, $limit)) return false;
+        if ((int)$limit[1] > 100) return false;
+    } else $sql .= ' LIMIT 100';
     return $sql;
 }
 
 $question = trim(isset($_POST['question']) ? $_POST['question'] : '');
 if ($question === '' || strlen($question) > 1000) sinx_ai_json_error(400, 'Scrivi una domanda (massimo 1000 caratteri).');
 $settings = sinx_ai_load_settings();
-$tableMap = array(
-    'anagrafica' => array('tb_anagrafe', 'tb_classe', 'tb_materia'),
-    'contabilita' => array('tb_primanota', 'tb_fatture', 'tb_ricevute', 'tb_conto_economico', 'tb_stato_patrimoniale', 'tb_tot_fatture'),
-    'progetti' => array('tb_progetto'),
-    'calendario' => array('appuntamenti')
-);
-$allowedTables = array();
-foreach ($settings['categories'] as $category) if (isset($tableMap[$category])) $allowedTables = array_merge($allowedTables, $tableMap[$category]);
-$allowedTables = array_values(array_unique($allowedTables));
-if (!$allowedTables || !$settings['api_key'] || !$settings['model']) sinx_ai_json_error(503, 'Assistente AI non configurato o nessuna categoria abilitata.');
+if (!$settings['api_key'] || !$settings['model']) sinx_ai_json_error(503, 'Assistente AI non configurato.');
 
 // Reuse Sinx's existing database settings. The AI query still runs in a
 // read-only transaction and passes the SELECT/table/function allowlist below.
@@ -55,25 +47,37 @@ $db = @mysqli_connect($host, $username, $password, $db_name, $portAi);
 if (!$db) sinx_ai_json_error(503, 'Connessione al database AI non disponibile.');
 mysqli_set_charset($db, 'utf8mb4');
 $schema = array();
-foreach ($allowedTables as $table) {
-    $result = mysqli_query($db, 'SHOW COLUMNS FROM `' . $table . '`');
-    if (!$result) continue;
-    while ($column = mysqli_fetch_assoc($result)) if (!sinx_ai_sensitive_name($column['Field'])) $schema[$table][] = $column['Field'];
+$allowedTables = array();
+$tablesResult = mysqli_query($db, 'SHOW TABLES');
+if (!$tablesResult) sinx_ai_json_error(503, 'Non riesco a leggere l’elenco delle tabelle del database.');
+$excludedTables = array('utenti', 'tb_utenti', 'users', 'user', 'auth', 'tb_auth', 'login', 'tb_login');
+while ($tableRow = mysqli_fetch_row($tablesResult)) {
+    $table = $tableRow[0];
+    if (!preg_match('/^[a-zA-Z0-9_]+$/', $table)) continue;
+    if (in_array(strtolower($table), $excludedTables, true)) continue;
+    $columnsSql = 'SHOW COLUMNS FROM ' . chr(96) . $table . chr(96);
+    $columnsResult = mysqli_query($db, $columnsSql);
+    if (!$columnsResult) continue;
+    while ($column = mysqli_fetch_assoc($columnsResult)) {
+        if (!sinx_ai_credential_field($column['Field'])) $schema[$table][] = $column['Field'];
+    }
+    if (!empty($schema[$table])) $allowedTables[] = strtolower($table);
+    else unset($schema[$table]);
 }
-if (!$schema) sinx_ai_json_error(503, 'Non trovo tabelle consultabili per le categorie abilitate.');
+if (!$schema) sinx_ai_json_error(503, 'Non trovo tabelle applicative consultabili nel database.');
+$allowedTables = array_values(array_unique($allowedTables));
 
 try {
-    $prompt = "Sei l'assistente informativo di Sinx. Genera una sola query MySQL SELECT di sola lettura che risponda alla domanda. Non generare istruzioni o commenti: restituisci solo SQL. Usa esclusivamente le tabelle e colonne elencate. Non usare SELECT *, subquery, UNION, commenti, funzioni diverse da COUNT, SUM, AVG, MIN, MAX, ROUND, COALESCE, IFNULL, YEAR, MONTH, DAY, DATE, DATEDIFF. Non selezionare né filtrare dati identificativi. Metti LIMIT 100. Schema consultabile: " . json_encode($schema) . "\nDomanda: " . $question;
+    $prompt = "Sei l'assistente informativo di Sinx. Genera una sola query MySQL SELECT di sola lettura per rispondere alla domanda. Restituisci esclusivamente SQL, senza Markdown e senza punto e virgola finale. Puoi consultare tutte le tabelle e le colonne dello schema fornito, anche dati identificativi come nome e cognome, perché la richiesta proviene dall'amministratore autenticato. Non tentare di leggere credenziali o segreti: le relative tabelle e colonne sono escluse. Usa solo le tabelle e colonne elencate; non usare SELECT *, subquery, UNION, CTE, commenti, variabili SQL, assegnazioni, query multiple o funzioni non necessarie. Sono ammesse le funzioni COUNT, SUM, AVG, MIN, MAX, ROUND, COALESCE, IFNULL, NULLIF, IF, YEAR, MONTH, DAY, DATE, DATEDIFF, TIMESTAMPDIFF, DATE_FORMAT, CURDATE, NOW, CONCAT, CONCAT_WS, LOWER, UPPER, TRIM, LENGTH, CHAR_LENGTH, SUBSTRING, LEFT, RIGHT, LOCATE, REPLACE, ABS, FLOOR, CEIL, CAST, CONVERT e GROUP_CONCAT. Per domande sui nominativi cerca nei campi nome e cognome; se viene chiesto un elenco, restituisci le colonne utili e non solo un conteggio. Metti LIMIT 100. Schema: " . json_encode($schema) . "\nDomanda: " . $question;
     $sql = sinx_ai_call($settings, array(array('role' => 'user', 'content' => $prompt)));
     $safeSql = sinx_ai_validate_sql($sql, array_map('strtolower', $allowedTables));
     if ($safeSql === false) sinx_ai_json_error(422, 'La richiesta richiede dati o una query non consentiti. Riformula la domanda in modo più generale.');
-    if (!preg_match('/\b(COUNT|SUM|AVG)\s*\(/i', $safeSql)) sinx_ai_json_error(422, 'Per proteggere i dati personali, l’assistente risponde solo con risultati aggregati.');
     if (!mysqli_query($db, 'START TRANSACTION READ ONLY')) sinx_ai_json_error(503, 'Il database non supporta una transazione in sola lettura per l’assistente.');
     $result = mysqli_query($db, $safeSql);
     if (!$result) { mysqli_rollback($db); sinx_ai_json_error(422, 'Non riesco a leggere i dati per questa domanda.'); }
     $rows = array();
     while ($row = mysqli_fetch_assoc($result)) {
-        foreach ($row as $key => $value) if (sinx_ai_sensitive_name($key)) unset($row[$key]);
+        foreach ($row as $key => $value) if (sinx_ai_credential_field($key)) unset($row[$key]);
         $rows[] = $row;
         if (count($rows) >= 100) break;
     }
