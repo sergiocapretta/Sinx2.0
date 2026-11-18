@@ -13,7 +13,7 @@ function sinx_ai_validate_sql($sql, $allowedTables) {
     $sql = trim($sql);
     $sql = preg_replace('/^```(?:sql)?\s*|\s*```$/i', '', $sql);
     // A single final semicolon is harmless SQL formatting; remove it before validation.
-    $sql = preg_replace('/;\\s*$/', '', $sql);
+    $sql = preg_replace('/;\s*$/', '', $sql);
     if (strlen($sql) > 5000 || strpos($sql, ';') !== false || strpos($sql, '--') !== false || strpos($sql, '/*') !== false || strpos($sql, '#') !== false) return false;
     if (!preg_match('/^SELECT\b/i', $sql) || preg_match('/\b(UNION|INSERT|UPDATE|DELETE|REPLACE|DROP|ALTER|CREATE|TRUNCATE|GRANT|REVOKE|INTO|OUTFILE|DUMPFILE|PROCEDURE|FOR\s+UPDATE|LOCK|SLEEP|BENCHMARK|LOAD_FILE|INFORMATION_SCHEMA|MYSQL\.)\b/i', $sql)) return false;
     if (preg_match('/\(\s*SELECT\b/i', $sql) || preg_match_all('/\bSELECT\b/i', $sql) !== 1) return false;
