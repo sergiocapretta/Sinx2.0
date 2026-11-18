@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $token = isset($_POST['csrf']) ? $_POST['csrf'] : '';
     if (!hash_equals($_SESSION['sinx_ai_csrf'], $token)) { http_response_code(400); exit('Richiesta non valida.'); }
     $provider = isset($_POST['provider']) ? $_POST['provider'] : '';
-    if (!in_array($provider, array('openai', 'anthropic', 'gemini', 'qwen'), true)) { $message = 'Fornitore non valido.'; }
+    if (!in_array($provider, array('openai', 'anthropic', 'gemini', 'qwen', 'groq'), true)) { $message = 'Fornitore non valido.'; }
     elseif ($provider !== $savedProvider && empty($_POST['api_key'])) { $message = 'Quando cambi fornitore, inserisci la relativa chiave API.'; }
     else {
         $key = trim(isset($_POST['api_key']) ? $_POST['api_key'] : '');
@@ -48,10 +48,10 @@ include __DIR__ . '/top.inc';
 <form method="post" class="sinx-form">
 <input type="hidden" name="csrf" value="<?php echo htmlspecialchars($_SESSION['sinx_ai_csrf'], ENT_QUOTES, 'UTF-8'); ?>">
 <label>Fornitore</label><select name="provider">
-<?php foreach (array('openai' => 'OpenAI', 'anthropic' => 'Anthropic', 'gemini' => 'Google Gemini', 'qwen' => 'Qwen (Alibaba Cloud Model Studio)') as $id => $label) echo '<option value="' . $id . '"' . ($settings['provider'] === $id ? ' selected' : '') . '>' . $label . '</option>'; ?>
+<?php foreach (array('openai' => 'OpenAI', 'anthropic' => 'Anthropic', 'gemini' => 'Google Gemini', 'qwen' => 'Qwen (Alibaba Cloud Model Studio)', 'groq' => 'Groq') as $id => $label) echo '<option value="' . $id . '"' . ($settings['provider'] === $id ? ' selected' : '') . '>' . $label . '</option>'; ?>
 </select>
-<label>Endpoint API (necessario per Qwen)</label><input type="url" name="endpoint" placeholder="https://dashscope.aliyuncs.com/compatible-mode/v1" value="<?php echo htmlspecialchars(isset($settings['endpoint']) ? $settings['endpoint'] : '', ENT_QUOTES, 'UTF-8'); ?>">
-<label>Modello (nome API)</label><input type="text" name="model" required value="<?php echo htmlspecialchars($settings['model'], ENT_QUOTES, 'UTF-8'); ?>">
+<label>Endpoint API (necessario solo per Qwen; Groq usa automaticamente il proprio endpoint)</label><input type="url" name="endpoint" placeholder="https://dashscope.aliyuncs.com/compatible-mode/v1" value="<?php echo htmlspecialchars(isset($settings['endpoint']) ? $settings['endpoint'] : '', ENT_QUOTES, 'UTF-8'); ?>">
+<label>Modello (nome API; per Groq, ad esempio openai/gpt-oss-20b)</label><input type="text" name="model" required value="<?php echo htmlspecialchars($settings['model'], ENT_QUOTES, 'UTF-8'); ?>">
 <label>Chiave API<?php echo $settings['api_key'] ? ' (vuoto = mantieni quella salvata)' : ''; ?></label><input type="password" name="api_key" autocomplete="new-password" <?php echo $settings['api_key'] ? '' : 'required'; ?> value="">
 <fieldset><legend>Categorie consultabili</legend>
 <?php foreach ($categories as $id => $label) { $checked = in_array($id, $settings['categories'], true) ? ' checked' : ''; echo '<label><input type="checkbox" name="categories[]" value="' . $id . '"' . $checked . '> ' . $label . '</label><br>'; } ?>
